@@ -1,0 +1,1 @@
+function Ya(a,b){switch(a[0]){case 21:sa(b);break;case 22:var c=1;a[1]&&a[1][15]&&(c=a[1][15]);RAF(b,c);break;case 23:var d;a[1]&&a[1][16]&&(c=a[1][16]);a[1]&&a[1][17]&&(d=function(b){setTimeout(b,a[1][17])});G(b,c,d);break;case 24:var e,f;a[1]&&a[1][18]&&(e=a[1][18]);a[1]&&a[1][19]&&(f=a[1][19]);Gb(e,f,b);break;case 20:c="all",a[1]&&a[1][20]&&(c=a[1][20]),Ga(c,b)}};

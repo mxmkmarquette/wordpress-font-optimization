@@ -1,0 +1,26 @@
+<?php
+namespace O10n;
+
+/**
+ * Global functions
+ *
+ * @package    optimization
+ * @subpackage optimization/controllers
+ * @author     PageSpeed.pro <info@pagespeed.pro>
+ */
+
+// return optimization controller
+function get($controller)
+{
+    return Core::get($controller);
+}
+
+// Add search replace filter
+function search_replace($search, $replace, $regex = false)
+{
+    Core::get('output')->add_search_replace($search, $replace, $regex);
+}
+
+
+// load cron related methods
+require O10N_CORE_PATH . 'includes/cron.inc.php';

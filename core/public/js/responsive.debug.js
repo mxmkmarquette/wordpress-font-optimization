@@ -1,0 +1,1 @@
+var Xb=m.matchMedia||m.R,Yb={};function Ma(a){if(!Xb||!a||-1!==["all","print","screen"].indexOf(a))return!0;if(!(a in Yb)){var c=Xb(a);Yb[a]=c.matches?!0:c}return Yb[a]}function Oa(a,c,b){if(!0===Ma(a)&&(c(),!b))return;Yb[a].addListener(function(d){d.matches?(Yb[a]=!0,c()):d.matches||b&&!0===Yb[a]&&b()})}y.media=Oa;
