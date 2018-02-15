@@ -2,6 +2,8 @@
 
 Advanced Web Font optimization toolkit. Font Face API, Web Font Observer, Google Font Loader, Critical CSS, async and timed font rendering and more.
 
+[View Documentation](https://github.com/o10n-x/font-optimization/tree/master/docs).
+
 ## Description
 
 This plugin is a toolkit for professional web font optimization. 
