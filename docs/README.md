@@ -37,7 +37,7 @@ Table of contents
 
 Font Face API is supported by modern versions of Chrome and Firefox. The Font Face API configuration of the plugin is based on a [JSON schema](https://pagespeed.pro/schemas/fonts.json) which can be easily edited using the provided JSON editor in the plugin.
 
-[[https://github.com/o10n-x/font-optimization/blob/master/docs/images/font-face-api-json-editor.png|alt=Font Face API Configuration]]
+![Font Face API Configuration](https://github.com/o10n-x/font-optimization/blob/master/docs/images/font-face-api-json-editor.png)
 
 The configuration is a array of JSON objects. Each object is a group of fonts to load via the Font Face API. The group can contain it's own before and onload actions, enable/disable settings such as `rel="preload"` for WOFF2 fonts and configure group specific load and render timing. 
 
@@ -508,7 +508,7 @@ The `classList` property is an object containing the properties `add` and `remov
 
 Font Face Observer is supported by all browsers. The Font Face Observer configuration of the plugin is based on a [JSON schema](https://pagespeed.pro/schemas/fonts.json) which can be easily edited using the provided JSON editor in the plugin.
 
-[[https://github.com/o10n-x/font-optimization/blob/master/docs/images/font-face-observer-json-editor.png|alt=Font Face Observer Configuration]]
+![Font Face Observer Configuration](https://github.com/o10n-x/font-optimization/blob/master/docs/images/font-face-observer-json-editor.png)
 
 The configuration is a array of JSON objects. Each object is a group of fonts to load via the Font Face Observer. The group can contain it's own before and onload actions, enable/disable settings and configure group specific load and render timing. 
 
@@ -812,6 +812,6 @@ The Web Font Loader by Google has it's own methods for defining actions before a
 
 The plugin provides a javascript editor for the `WebFontConfig` variable. The variable is dynamicly processed using the `o10n.fonts` client. The client includes the latest version of Google's font loader integrated in the client for optimal performance.
 
-[[https://github.com/o10n-x/font-optimization/blob/master/docs/images/google-font-loader-editor.png|alt=Google Font Loader Configuration]]
+![Google Font Loader Configuration](https://github.com/o10n-x/font-optimization/blob/master/docs/images/google-font-loader-editor.png)
 
 The plugin enables to remove existing Google Font Loader configuration, both links to `webfont.js` and WebFontConfig by replacing it with an empty IIFE.
