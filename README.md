@@ -1,13 +1,4 @@
 # Web Font Optimization
-Contributors: o10n
-Donate link: https://pagespeed.pro/
-Tags: font, webfont, font face api, optimization, google font loader, css, page speed, performance, speed, fonts, webfonts
-Requires at least: 4.0
-Requires PHP: 5.4
-Tested up to: 4.9.4
-Stable tag: 0.0.1
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Advanced Web Font optimization toolkit. Font Face API, Web Font Observer, Google Font Loader, Critical CSS, async and timed font rendering and more.
 
