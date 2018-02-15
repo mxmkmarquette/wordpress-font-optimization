@@ -2,7 +2,9 @@
 
 Advanced Web Font optimization toolkit. Font Face API, Web Font Observer, Google Font Loader, Critical CSS, async and timed font rendering and more.
 
-[View Documentation](https://github.com/o10n-x/font-optimization/tree/master/docs).
+**This plugin is a beta release.**
+
+Documentation is available [here](https://github.com/o10n-x/font-optimization/tree/master/docs).
 
 ## Description
 
@@ -21,10 +23,6 @@ With debug modus enabled, the browser console will show detailed information abo
 The plugin contains a tool to download and install Google fonts locally for a theme, it provides an option to push fonts using HTTP/2 Server Push, it enables to remove linked fonts from HTML and CSS source code (`<link rel="stylesheet">` and `@import` links) and to remove Google Font Loader from HTML and javascript source code.
 
 Additional features can be requested on the [Github forum](https://github.com/o10n-x/font-optimization/issues).
-
-**This plugin is a beta release.**
-
-Documentation is available on [Github](https://github.com/o10n-x/font-optimization/tree/master/docs).
 
 ## Changelog
 
