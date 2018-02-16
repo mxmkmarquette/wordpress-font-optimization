@@ -32,7 +32,6 @@ abstract class Controller
     protected $cache;
     protected $file;
     protected $http;
-    protected $pagecache;
     protected $output;
     protected $db;
     protected $admin;
@@ -43,12 +42,9 @@ abstract class Controller
     protected $url;
     protected $http2;
     protected $proxy;
-    protected $dev;
     protected $html;
-    protected $htmlstream;
     protected $css;
     protected $js;
-    protected $concat;
 
     // admin controller instances
     protected $AdminCP;

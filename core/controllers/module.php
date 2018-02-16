@@ -32,6 +32,10 @@ final class Module implements Module_Interface
     private $admin_controllers;
     private $admin_global_controllers;
 
+    // cache stores
+    private $cache_store_index;
+    private $cache_stores;
+
     // disable module
     private $disabled = false;
 
@@ -45,7 +49,7 @@ final class Module implements Module_Interface
      * @param array  $controllers          Controllers to load
      * @param string $plugin_file          Module plugin file name
      */
-    final public function __construct($module_key, $module_name, $module_version, $minimum_core_version, $controllers, $plugin_file)
+    final public function __construct($module_key, $module_name, $module_version, $minimum_core_version, $controllers, $cache_store_index, $cache_stores, $plugin_file)
     {
         // module info
         $this->module_key = $module_key;
@@ -60,6 +64,11 @@ final class Module implements Module_Interface
         $this->dir_path = \plugin_dir_path($plugin_file);
         $this->dir_url = \plugin_dir_url($plugin_file);
         $this->basename = \plugin_basename($plugin_file);
+
+        // cache stores
+        $this->cache_store_index = (is_numeric($cache_store_index)) ? $cache_store_index : false;
+        ;
+        $this->cache_stores = ($this->cache_store_index && is_array($cache_stores) && !empty($cache_stores)) ? $cache_stores : false;
 
         // define controllers
         if ($controllers) {
@@ -80,6 +89,14 @@ final class Module implements Module_Interface
 
         // add module to core
         add_action('plugins_loaded', array($this,'load_module'), 5);
+    }
+
+    /**
+     * Return module key
+     */
+    final public function module_key()
+    {
+        return $this->module_key;
     }
 
     /**
@@ -187,10 +204,35 @@ final class Module implements Module_Interface
     }
 
     /**
+     * Return cache store index
+     */
+    final public function cache_store_index()
+    {
+        // disabled
+        if ($this->disabled) {
+            return;
+        }
+
+        return $this->cache_store_index;
+    }
+
+    /**
+     * Return cache stores
+     */
+    final public function cache_stores()
+    {
+        // disabled
+        if ($this->disabled) {
+            return;
+        }
+
+        return $this->cache_stores;
+    }
+
+    /**
      * Return admin view directory
      *
-     * @param  array $directories Module view directories
-     * @return array Module view directories
+     * @return string Module view directory
      */
     final public function admin_view_directory()
     {

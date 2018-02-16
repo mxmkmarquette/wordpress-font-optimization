@@ -13,7 +13,7 @@ namespace O10n;
  * @wordpress-plugin
  * Plugin Name:       Web Font Optimization
  * Description:       Advanced Web Font optimization toolkit. Font Face API, Web Font Observer, Google Font Loader, Critical CSS, async and timed font rendering and more.
- * Version:           0.0.1
+ * Version:           0.0.2
  * Author:            PageSpeed.pro
  * Author URI:        https://pagespeed.pro/
  * Text Domain:       o10n
@@ -30,8 +30,8 @@ if (defined('WP_INSTALLING') && WP_INSTALLING) {
 }
 
 // settings
-$module_version = '0.0.1';
-$minimum_core_version = '0.0.1';
+$module_version = '0.0.2';
+$minimum_core_version = '0.0.2';
 $plugin_path = dirname(__FILE__);
 
 // load the optimization module loader
@@ -49,14 +49,19 @@ new Module(
         'core' => array(
             'http',
             'shutdown',
-            'cache',
             'client',
-            'install',
-            'output',
             'fonts'
         ),
         'admin' => array(
             'AdminFonts'
+        )
+    ),
+    5,
+    array(
+        'google_webfonts_api' => array(
+            'hash_dir' => 'fonts/google/',
+            'file_ext' => '.json',
+            'expire' => 86400 // expire after 1 day
         )
     ),
     __FILE__

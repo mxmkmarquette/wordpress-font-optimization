@@ -26,8 +26,7 @@ class Install extends Controller implements Controller_Interface
     {
         return parent::construct($Core, array(
             'cache',
-            'options',
-            //'pagecache'
+            'options'
         ));
     }
 
@@ -41,14 +40,14 @@ class Install extends Controller implements Controller_Interface
         }
 
         // set current version
-        $this->current_version = get_option('o10n_version', false);
+        $this->current_version = get_option('o10n_core_version', false);
 
         // upgrade/install hooks
         add_action('plugins_loaded', array($this, 'upgrade'), 10);
 
         // activate / deactivate hooks
-        add_action('o10n_plugin_activate', array($this, 'activate'), 10);
-        add_action('o10n_plugin_deactivate', array($this, 'deactivate'), 10);
+        add_action('o10n_plugin_activate', array($this, 'activate'), 1);
+        add_action('o10n_plugin_deactivate', array($this, 'deactivate'), 1);
 
         // add cron shedules
         add_filter('cron_schedules', array($this,'cron_schedules'));
@@ -59,8 +58,12 @@ class Install extends Controller implements Controller_Interface
      */
     final public function activate()
     {
+
+        // create cache tables
+        $this->create_cache_tables();
+
         // setup crons
-        if (function_exists('wp_next_scheduled')) {
+        /*if (function_exists('wp_next_scheduled')) {
 
             // cache cleanup cron
             if (!wp_next_scheduled('o10n_cron_prune_cache')) {
@@ -71,7 +74,7 @@ class Install extends Controller implements Controller_Interface
             if (!wp_next_scheduled('o10n_cron_prune_expired_cache')) {
                 wp_schedule_event(current_time('timestamp'), '5min', 'o10n_cron_prune_expired_cache');
             }
-        }
+        }*/
     }
 
     /**
@@ -81,8 +84,8 @@ class Install extends Controller implements Controller_Interface
     {
 
         // remove crons
-        wp_clear_scheduled_hook('o10n_cron_prune_cache');
-        wp_clear_scheduled_hook('o10n_cron_prune_expired_cache');
+        //wp_clear_scheduled_hook('o10n_cron_prune_cache');
+        //wp_clear_scheduled_hook('o10n_cron_prune_expired_cache');
     }
 
     /**
@@ -91,10 +94,8 @@ class Install extends Controller implements Controller_Interface
     final public function upgrade()
     {
 
-        // new installation
-        if (!$this->current_version) {
-            return $this->install();
-        }
+        // initiate cache tables
+        $this->cache->create_tables();
 
         // upgrade
         if (O10N_CORE_VERSION !== $this->current_version) {
@@ -105,88 +106,18 @@ class Install extends Controller implements Controller_Interface
             // update options?
             $update_options = false;
 
-            // upgrade from Above The Fold version (<3.0)
-            if (version_compare($this->current_version, '3.0', '<')) {
-
-                // load upgrade controller
-                $upgrade = & Install_Upgrade_ABTF::load($this->core);
-
-                // upgrade
-                $options = $upgrade->upgrade($this->current_version, $options);
-            }
-
-            // update tables
-            $this->create_tables();
-
             // update current version option
-            update_option('o10n_version', O10N_CORE_VERSION, true);
+            update_option('o10n_core_version', O10N_CORE_VERSION, false);
 
+            // upgrade actions
             // ...
 
-            // update options
-            update_option('o10n', $options, true);
+            if (!$update_options) {
 
-            // clear page related caches
-            $this->pagecache->clear();
+              // update options
+                update_option('o10n', $options, true);
+            }
         }
-    }
-
-    /**
-     * Install plugin
-     */
-    final protected function install()
-    {
-
-        // create tables
-        $this->create_tables();
-
-        // load default configuration
-        // ...
-        //update_option('o10n', $options, true);
-
-        // set version option
-        update_option('o10n_version', O10N_CORE_VERSION, false);
-        $this->current_version = O10N_CORE_VERSION;
-    }
-
-    /**
-     * Create cache table
-     */
-    final private function create_tables()
-    {
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-
-        /**
-         * Cache table
-         */
-        $table_name = $this->cache->db_table();
-        if (!$this->table_exists($table_name)) {
-            $sql = "CREATE TABLE {$table_name} (
-                `hash` binary(16) NOT NULL,
-                `type` tinyint(1) UNSIGNED NOT NULL,
-                `ext` VARCHAR(4) NOT NULL,
-                `size` int(10) UNSIGNED NOT NULL,
-                `date` datetime NOT NULL,
-                `expire` int(10) UNSIGNED NOT NULL,
-                PRIMARY KEY (`hash`,`type`),
-                KEY `type` (`type`),
-                KEY `size` (`size`),
-                KEY `date` (`date`),
-                KEY `expire` (`expire`)
-            );";
-            dbDelta($sql);
-        }
-    }
-
-    /**
-     * Test if table exists
-     *
-     * @param  string $table_name The table name to verify.
-     * @return bool   Table exists true/false
-     */
-    final private function table_exists($table_name)
-    {
-        return ($this->wpdb->get_var($this->wpdb->prepare("SHOW TABLES LIKE '%s'", $table_name)) === $table_name);
     }
 
     /**

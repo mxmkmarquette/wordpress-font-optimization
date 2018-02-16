@@ -404,12 +404,12 @@ class AdminViewFonts extends AdminViewBase
         }
 
         $cacheHash = md5(json_encode($cacheHashData));
-        $cacheFile = $this->cache->path('fonts:google_webfonts_api', $cacheHash);
+        $cacheFile = $this->cache->path('fonts', 'google_webfonts_api', $cacheHash);
 
         // verify cache data
         $fontInfo = false;
         if ($cacheFile) {
-            $fontInfo = $this->cache->get('fonts:google_webfonts_api', $cacheHash, true);
+            $fontInfo = $this->cache->get('fonts', 'google_webfonts_api', $cacheHash, true);
             if ($fontInfo) {
                 try {
                     $fontInfo = $this->json->parse($fontInfo, true);
@@ -443,7 +443,7 @@ class AdminViewFonts extends AdminViewBase
             }
 
             // save cache
-            $this->cache->put('fonts:google_webfonts_api', $cacheHash, json_encode($fontInfo), false, true);
+            $this->cache->put('fonts', 'google_webfonts_api', $cacheHash, json_encode($fontInfo), false, true);
         }
 
         $request->output_ok(false, $fontInfo);

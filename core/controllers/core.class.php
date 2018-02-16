@@ -30,6 +30,8 @@ class Core
             'i18n',
             'json',
             'file',
+            'db',
+            'cache',
             'url',
             'options',
             'install',
@@ -290,7 +292,7 @@ class Core
             if ($file) {
                 $message .= "<p>File: ".esc_html(str_replace(ABSPATH, '[ABSPATH]', $file))." Line: ".esc_html($line)."</p>";
             }
-            add_action('admin_notices', create_function('', "echo '<div class=\"error\">".$message."</div>';"), (PHP_INT_MAX * -1));
+            add_action('admin_notices', create_function('', "echo '<div class=\"error\">".str_replace('\'', '\\\'', $message)."</div>';"), (PHP_INT_MAX * -1));
         } else {
             wp_die(__('Failed to load optimization plugin core. Please contact the administrator of this website.', 'o10n'));
         }

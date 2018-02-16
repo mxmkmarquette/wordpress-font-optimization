@@ -123,7 +123,7 @@ class File extends Controller implements Controller_Interface
      * @param  bool   $recursive Delete contents only (not the directory accessed)
      * @return bool   Deleted true/false.
      */
-    final public function rmdir($path, $contentsOnly = false)
+    final public function rmdir($path, $contentsOnly = false, $deleteNonEmpty = true)
     {
         if (!is_dir($path)) {
             return false;
@@ -135,9 +135,17 @@ class File extends Controller implements Controller_Interface
         }
 
         // delete files in directory
-        $files = array_diff(scandir($path), array('.','..'));
-        foreach ($files as $file) {
-            (is_dir("$path/$file")) ? $this->rmdir("$path/$file") : @unlink("$path/$file");
+        $files = new \FilesystemIterator($path, \FilesystemIterator::SKIP_DOTS);
+        if (!$deleteNonEmpty && !empty($files)) {
+            return false;
+        }
+
+        foreach ($files as $fileinfo) {
+            if ($fileinfo->isDir()) {
+                $this->rmdir($fileinfo->getPathname());
+            } else {
+                @unlink($fileinfo->getPathname());
+            }
         }
 
         // do not delete top-level directory
@@ -254,10 +262,10 @@ class File extends Controller implements Controller_Interface
     final public function touch($file)
     {
         // update last modified time
-        if (!touch($file) && file_exists($file)) {
+        if (!@touch($file) && file_exists($file)) {
             try {
                 // re-store file
-                $this->put_contents($file, file_get_contents($path));
+                $this->put_contents($file, file_get_contents($file));
             } catch (Exception $e) {
                 throw new \Exception('Failed to update file modified time for ' . $this->safe_path($file));
             }

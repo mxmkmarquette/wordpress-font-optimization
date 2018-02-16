@@ -70,12 +70,12 @@ class Client extends Controller implements Controller_Interface
 
         // load index from cache
         $cachehash = md5('config-index:' . O10N_CORE_VERSION);
-        if (!$this->env->is_dev() && $this->cache->exists('config:index', $cachehash)) {
+        if (!$this->env->is_dev() && $this->cache->exists('core', 'config_index', $cachehash)) {
 
             // preserve cache file based on access
-            $this->cache->preserve('config:index', $cachehash, (time() - 3600));
+            $this->cache->preserve('core', 'config_index', $cachehash, (time() - 3600));
 
-            $config_index = $this->cache->get('config:index', $cachehash, false, true);
+            $config_index = $this->cache->get('core', 'config_index', $cachehash, false, true);
             if ($config_index && count($config_index === 2)) {
                 $this->config_index = $config_index[0];
                 $this->subconfig_index = $config_index[1];
@@ -120,7 +120,7 @@ class Client extends Controller implements Controller_Interface
             }
 
             // save cache (PHP 7 Opcache)
-            $this->cache->put('config:index', $cachehash, array($this->config_index,$this->subconfig_index), false, false, true);
+            $this->cache->put('core', 'config_index', $cachehash, array($this->config_index,$this->subconfig_index), false, false, true);
         }
 
         // disabled

@@ -1,7 +1,0 @@
-{
-    "require": {
-        "justinrainbow/json-schema": "^5.2",
-        "firebase/php-jwt": "^4.0",
-        "natxet/cssmin": "^3.0"
-    }
-}

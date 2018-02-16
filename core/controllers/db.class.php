@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 class Db extends Controller implements Controller_Interface
 {
     private $mysqli = false; // use MySQLi?
+    private $last_result;
 
     /**
      * Load controller
@@ -54,12 +55,57 @@ class Db extends Controller implements Controller_Interface
      * @param  string   $query MySQL query.
      * @return resource MySQL query resource.
      */
-    public function query($query)
+    final public function query($query, $onTableError = false)
     {
         if ($this->mysqli) {
-            return @\mysqli_query($this->wpdb->dbh, $query);
+            \mysqli_query($this->wpdb->dbh, $query);
         } else {
-            return @\mysql_query($query, $this->wpdb->dbh);
+            $this->last_result = \mysql_query($query, $this->wpdb->dbh);
+        }
+
+
+        if (($last_error = $this->last_error()) && $last_error) {
+
+            // table does not exist
+            if ($onTableError && $last_error[0] === 1146) {
+                if (is_string($onTableError)) {
+                    switch ($onTableError) {
+
+                        // create cache tables
+                        case "cache":
+                            Core::get('cache')->create_tables();
+                        break;
+                    }
+                } else {
+                    call_user_func($onTableError);
+                }
+
+                // try again
+                return $this->query($query);
+            }
+
+            throw new Exception('MySQL query failed. ' . $last_error[0] . ': ' . $last_error[1], 'db');
+        }
+
+        return $this->last_result;
+    }
+
+    /**
+     * Number of rows in result
+     *
+     * @param  resource $result MySQL result resource.
+     * @return int      Number of rows.
+     */
+    final public function num_rows($result = false)
+    {
+        if (!$result) {
+            $result = $this->last_result;
+        }
+
+        if ($this->mysqli) {
+            return $result->num_rows;
+        } else {
+            return @\mysql_num_rows($result);
         }
     }
 
@@ -69,12 +115,16 @@ class Db extends Controller implements Controller_Interface
      * @param  resource $result MySQL result resource.
      * @return int      Number of rows.
      */
-    public function num_rows($result)
+    final public function insert_id($result = false)
     {
+        if (!$result) {
+            $result = $this->last_result;
+        }
+
         if ($this->mysqli) {
-            return $result->num_rows;
+            return $result->insert_id;
         } else {
-            return @\mysql_num_rows($result);
+            return @\mysql_insert_id($result);
         }
     }
 
@@ -84,13 +134,27 @@ class Db extends Controller implements Controller_Interface
      * @param  resource $result MySQL result resource.
      * @return array    Result row.
      */
-    public function fetch_assoc($result)
+    final public function fetch($result = false, $free_result = false)
     {
-        if ($this->mysqli) {
-            return @\mysqli_fetch_assoc($result);
-        } else {
-            return @\mysqli_fetch_array($result, MYSQL_ASSOC);
+        if (is_string($result)) {
+            $result = $this->query($result);
+            $free_result = true;
+        } elseif (!$result) {
+            $result = $this->last_result;
         }
+
+        // fetch
+        if ($this->mysqli) {
+            $row = @\mysqli_fetch_assoc($result);
+        } else {
+            $row = @\mysql_fetch_array($result, MYSQL_ASSOC);
+        }
+
+        if ($free_result) {
+            $this->free_result($result);
+        }
+
+        return $row;
     }
 
     /**
@@ -99,8 +163,14 @@ class Db extends Controller implements Controller_Interface
      * @param  resource $result MySQL result resource.
      * @return null
      */
-    public function free_result($result)
+    final public function free_result($result = false)
     {
+        if (!$result) {
+            $result = $this->last_result;
+        }
+        if (!$result) {
+            return;
+        }
         if ($this->mysqli) {
             return @\mysqli_free_result($result);
         } else {
@@ -114,12 +184,30 @@ class Db extends Controller implements Controller_Interface
      * @param  string $str String to escape.
      * @return string Escaped string.
      */
-    public function escape($str)
+    final public function escape($str)
     {
         if ($this->mysqli) {
-            return @\mysqli_real_escape_string($str, $this->wpdb->dbh);
+            return \mysqli_real_escape_string($this->wpdb->dbh, $str);
         } else {
-            return @\mysql_real_escape_string($str, $this->wpdb->dbh);
+            return \mysql_real_escape_string($str, $this->wpdb->dbh);
         }
+    }
+
+    /**
+     * Return last error
+     */
+    final public function last_error()
+    {
+        if ($this->mysqli) {
+            if (mysqli_errno($this->wpdb->dbh)) {
+                return array(mysqli_errno($this->wpdb->dbh),mysqli_error($this->wpdb->dbh));
+            }
+        } else {
+            if (mysql_errno()) {
+                return array(mysql_errno(), mysql_error());
+            }
+        }
+
+        return false;
     }
 }
