@@ -6,7 +6,8 @@ namespace O10n;
  *
  * @package    optimization
  * @subpackage optimization/controllers
- * @author     PageSpeed.pro <info@pagespeed.pro>
+ * @author     o10n-x <info@optimization.team>
+ * @link       https://github.com/o10n-x/
  */
 
 if (! defined('WPINC')) {

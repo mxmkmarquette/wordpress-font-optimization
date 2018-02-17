@@ -6,7 +6,7 @@ namespace O10n;
  *
  * @package    optimization
  * @subpackage optimization/controllers/admin
- * @author     PageSpeed.pro <info@pagespeed.pro>
+ * @author     o10n-x <info@optimization.team>
  */
 if (!defined('ABSPATH')) {
     exit;
@@ -56,9 +56,9 @@ class AdminHelp extends Controller implements Controller_Interface
 
         // WPO package defaults
         $wpo_name = $module_name = __('Performance Optimization', 'o10n');
-        $module_github = 'https://github.com/optimalisatie/above-the-fold-optimization/';
-        $module_wordpress = 'https://wordpress.org/xxx';
-        $module_docs = 'https://docs.pagespeed.pro/';
+        $module_github = 'https://github.com/o10n-x/';
+        $module_wordpress = 'https://profiles.wordpress.org/o10n';
+        $module_docs = 'https://github.com/o10n-x/';
 
         // get view controller
         $view = $this->AdminView->active_controller();
@@ -126,7 +126,7 @@ class AdminHelp extends Controller implements Controller_Interface
 
         $screen->set_help_sidebar(
                 '<p><strong>' . __('For more information:', 'o10n') . '</strong></p>' .
-                '<p><a href="' . esc_url('https://pagespeed.pro/') . '" target="_blank" rel="noopener">' . __('About PageSpeed.pro', 'o10n') . '</a></p>' .
+                '<p><a href="' . esc_url('https://github.com/o10n-x/') . '" target="_blank" rel="noopener">' . __('About o10n-x', 'o10n') . '</a></p>' .
                 '<p><a href="' . esc_url($module_wordpress) . '" target="_blank" rel="noopener">' . __('WordPress.org Project', 'o10n') . '</a></p>' .
                 '<p><a href="' . esc_url($module_github) . '" target="_blank" rel="noopener">' . __('Github Project', 'o10n') . '</a></p>' .
                 '<p><a href="' . esc_url($module_docs) . '" target="_blank" rel="noopener">' . __('Documentation', 'o10n') . '</a></p>'

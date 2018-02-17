@@ -24,7 +24,7 @@ $module_version = $view->module->version();
 			</div>
 			<h1><?php print $module_name;?> <?php print $module_version;?></h1>
 
-			<p class="about-text" style="min-height:inherit;">Thank you for using the <?php print $module_name;?> plugin by <a href="https://pagespeed.pro/" target="_blank" rel="noopener" style="color:black;text-decoration:none;">PageSpeed.<span class="g100" style="padding-top:1px;padding-bottom:0px;">PRO</span></a></p>
+			<p class="about-text" style="min-height:inherit;">Thank you for using the <?php print $module_name;?> plugin by <a href="https://optimization.team/" target="_blank" rel="noopener" style="color:black;text-decoration:none;">Optimization.Team</a></p>
 			
 			<p class="about-text" style="min-height:inherit;">This plugin is a toolkit for advanced Web Font optimization for WordPress. <!--The plugin can be used stand alone or as a module for the <a href="#">Performance Optimization plugin</a>.--></p>
 
@@ -32,7 +32,7 @@ $module_version = $view->module->version();
 
 			<p class="about-text" style="min-height:inherit;">Getting started? Read <a href="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/webfont-optimization" target="_blank">this article</a> about Web Font Optimization by Google.</p>
 
-			<p class="about-text" style="min-height:inherit;">If you are happy with the plugin, please consider to <a href="https://wordpress.org/support/plugin/web-font-optimization/reviews/#new-post" target="_blank" rel="noopener">write a review</a> and <span class="star" style="display:inline-block;vertical-align:middle;"><a class="github-button" data-manual="1" data-size="large" href="https://github.com/o10n-x/font-optimization" data-icon="octicon-star" data-show-count="true" aria-label="Star o10n-x/font-optimization on GitHub">Star</a></span> on Github.</p>
+			<p class="about-text" style="min-height:inherit;">If you are happy with the plugin, please consider to <a href="https://wordpress.org/support/plugin/web-font-optimization/reviews/#new-post" target="_blank" rel="noopener">write a review</a> and <span class="star" style="display:inline-block;vertical-align:middle;"><a class="github-button" data-manual="1" data-size="large" href="https://github.com/o10n-x/wordpress-font-optimization" data-icon="octicon-star" data-show-count="true" aria-label="Star o10n-x/font-optimization on GitHub">Star</a></span> on Github.</p>
 			</div>
 
 		</div>

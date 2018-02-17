@@ -6,7 +6,7 @@ namespace O10n;
  *
  * @package    optimization
  * @subpackage optimization/controllers/admin
- * @author     PageSpeed.pro <info@pagespeed.pro>
+ * @author     o10n-x <info@optimization.team>
  */
 if (!defined('ABSPATH')) {
     exit;
@@ -85,9 +85,9 @@ class AdminViewFonts extends AdminViewBase
     {
         $data = array(
             'name' => __('Web Font Optimization', 'o10n'),
-            'github' => 'https://github.com/o10n-x/font-optimization',
+            'github' => 'https://github.com/o10n-x/wordpress-font-optimization',
             'wordpress' => 'https://wordpress.org/support/plugin/web-font-optimization',
-            'docs' => 'https://github.com/o10n-x/font-optimization/tree/master/docs'
+            'docs' => 'https://github.com/o10n-x/wordpress-font-optimization/tree/master/docs'
         );
 
         return $data;

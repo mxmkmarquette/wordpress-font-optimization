@@ -6,7 +6,7 @@ namespace O10n;
  *
  * @package    optimization
  * @subpackage optimization/controllers/admin
- * @author     PageSpeed.pro <info@pagespeed.pro>
+ * @author     o10n-x <info@optimization.team>
  */
 if (!defined('ABSPATH')) {
     exit;

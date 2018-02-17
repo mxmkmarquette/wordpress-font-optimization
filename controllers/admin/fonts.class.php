@@ -6,7 +6,7 @@ namespace O10n;
  *
  * @package    optimization
  * @subpackage optimization/controllers/admin
- * @author     PageSpeed.pro <info@pagespeed.pro>
+ * @author     o10n-x <info@optimization.team>
  */
 if (!defined('ABSPATH')) {
     exit;
@@ -143,8 +143,7 @@ class AdminFonts extends ModuleAdminController implements Module_Admin_Controlle
     public function plugin_title()
     {
         ?><script>jQuery(function($){var r=$('*[data-plugin="<?php print $this->core->modules('fonts')->basename(); ?>"]');
-            $('.plugin-title strong',r).html('<?php print $this->core->modules('fonts')->name(); ?><a href="https://pagespeed.pro" class="g100" style="font-size: 10px;float: right;font-weight: normal;opacity: .2;line-height: 14px;">O10N</span>');
-            var d=$('.plugin-description',r).html();$('.plugin-description',r).html(d.replace('Google PageSpeed','<a href="https://developers.google.com/speed/pagespeed/insights/" target="_blank">Google PageSpeed</a>').replace('Google Lighthouse','<a href="https://developers.google.com/web/tools/lighthouse/" target="_blank">Google Lighthouse</a>').replace('ThinkWithGoogle.com','<a href="https://testmysite.thinkwithgoogle.com/" target="_blank">ThinkWithGoogle.com</a>').replace('Excellent','<span style="font-style:italic;color:#079c2d;">Excellent</span>'));
+            $('.plugin-title strong',r).html('<?php print $this->core->modules('fonts')->name(); ?><a href="https://github.com/o10n-x/" class="g100" target="_blank" rel="noopener">O10N</span>');
 });</script><?php
     }
 }

@@ -6,16 +6,15 @@ namespace O10n;
  *
  * Advanced Web Font optimization toolkit. Font Face API, Web Font Observer, Google Font Loader, Critical CSS, async and timed font rendering and more.
  *
- * @link              https://pagespeed.pro/
- * @since             1.0
+ * @link              https://github.com/o10n-x/
  * @package           o10n
  *
  * @wordpress-plugin
  * Plugin Name:       Web Font Optimization
  * Description:       Advanced Web Font optimization toolkit. Font Face API, Web Font Observer, Google Font Loader, Critical CSS, async and timed font rendering and more.
  * Version:           0.0.2
- * Author:            PageSpeed.pro
- * Author URI:        https://pagespeed.pro/
+ * Author:            Optimization.Team
+ * Author URI:        https://optimization.team/
  * Text Domain:       o10n
  * Domain Path:       /languages
  */

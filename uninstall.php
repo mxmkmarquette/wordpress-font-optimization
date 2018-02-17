@@ -3,7 +3,7 @@
 /**
  * Fired when the plugin is uninstalled.
  *
- * @link       https://pagespeed.pro/
+ * @link       https://github.com/o10n-x/
  * @since      2.5.0
  *
  * @package    o10n

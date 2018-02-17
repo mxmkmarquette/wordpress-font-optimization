@@ -1,6 +1,6 @@
 === Web Font Optimization ===
 Contributors: o10n
-Donate link: https://pagespeed.pro/
+Donate link: https://github.com/o10n-x/
 Tags: font, webfont, font face api, optimization, google font loader, css, page speed, performance, speed, fonts, webfonts
 Requires at least: 4.0
 Requires PHP: 5.4
@@ -27,11 +27,11 @@ With debug modus enabled, the browser console will show detailed information abo
 
 The plugin contains a tool to download and install Google fonts locally for a theme, it provides an option to push fonts using HTTP/2 Server Push, it enables to remove linked fonts from HTML and CSS source code (`<link rel="stylesheet">` and `@import` links) and to remove Google Font Loader from HTML and javascript source code.
 
-Additional features can be requested on the [Github forum](https://github.com/o10n-x/font-optimization/issues).
+Additional features can be requested on the [Github forum](https://github.com/o10n-x/wordpress-font-optimization/issues).
 
 **This plugin is a beta release.**
 
-Documentation is available on [Github](https://github.com/o10n-x/font-optimization/tree/master/docs).
+Documentation is available on [Github](https://github.com/o10n-x/wordpress-font-optimization/tree/master/docs).
 
 == Installation ==
 
@@ -40,7 +40,7 @@ Documentation is available on [Github](https://github.com/o10n-x/font-optimizati
 1. Upload the `web-font-optimization/` directory to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Navigate to the plugin settings page.
-4. Configure Web Font Optimization settings. Documentation is available on [Github](https://github.com/o10n-x/font-optimization/tree/master/docs).
+4. Configure Web Font Optimization settings. Documentation is available on [Github](https://github.com/o10n-x/wordpress-font-optimization/tree/master/docs).
 
 == Screenshots ==
 
@@ -58,7 +58,7 @@ Added: unrender Font Face API fonts on Media Query change (timed render).
 
 = 0.0.1 =
 
-Beta release. Please provide feedback on [Github forum](https://github.com/o10n-x/font-optimization/issues).
+Beta release. Please provide feedback on [Github forum](https://github.com/o10n-x/wordpress-font-optimization/issues).
 
 == Upgrade Notice ==
 
