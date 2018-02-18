@@ -52,6 +52,10 @@ Documentation is available on [Github](https://github.com/o10n-x/wordpress-font-
 
 == Changelog ==
 
+= 0.0.3 =
+
+Core update (see changelog.txt)
+
 = 0.0.2 =
 
 Added: unrender Font Face API fonts on Media Query change (timed render).

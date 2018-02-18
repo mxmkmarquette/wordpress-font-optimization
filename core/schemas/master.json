@@ -67,6 +67,9 @@
         "http2": {
             "$ref": "http2.json#"
         },
+        "timed-exec": {
+            "$ref": "timed-exec.json#"
+        },
         "cdn": {
             "title": "Content Delivery Network",
             "type": "object",

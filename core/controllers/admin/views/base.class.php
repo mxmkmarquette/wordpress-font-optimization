@@ -80,8 +80,10 @@ class AdminViewBase extends Controller implements AdminView_Controller_Interface
         // WPO plugin
         if (defined('O10N_WPO_VERSION')) {
             return $this->core->modules('wpo')->admin_base();
-        } else {
+        } elseif (!empty($this->module_key)) {
             return $this->core->modules($this->module_key)->admin_base();
+        } else {
+            return 'admin.php';
         }
     }
 
@@ -96,8 +98,10 @@ class AdminViewBase extends Controller implements AdminView_Controller_Interface
         // WPO plugin
         if (defined('O10N_WPO_VERSION')) {
             return $this->core->modules('wpo')->admin_tabs();
-        } else {
+        } elseif (!empty($this->module_key)) {
             return $this->core->modules($this->module_key)->admin_tabs();
+        } else {
+            return array();
         }
     }
 
@@ -148,7 +152,7 @@ class AdminViewBase extends Controller implements AdminView_Controller_Interface
             return $this->module->dir_path() . $template_path;
         }
         $template = O10N_CORE_PATH . $template_path;
-        if (!file_exists($template)) {
+        if (file_exists($template)) {
             return $template;
         }
 

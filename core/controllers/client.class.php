@@ -123,6 +123,7 @@ class Client extends Controller implements Controller_Interface
             $this->cache->put('core', 'config_index', $cachehash, array($this->config_index,$this->subconfig_index), false, false, true);
         }
 
+
         // disabled
         if (!$this->env->is_optimization()) {
             return;
@@ -172,7 +173,7 @@ class Client extends Controller implements Controller_Interface
     final public function add_html($HTML)
     {
         // no <head> tag, skip
-        if (stripos('<head>') === false && stripos('<head ') === false) {
+        if (stripos($HTML, '<head>') === false && stripos($HTML, '<head ') === false) {
             return $HTML;
         }
 
@@ -188,7 +189,7 @@ class Client extends Controller implements Controller_Interface
         if (preg_match($head_meta_regex, $HTML, $out)) {
 
             // detect charset from meta
-            if (!$out[2]) {
+            if (!isset($out[2]) || !$out[2]) {
                 if (preg_match($charset_meta_regex, $HTML, $charset_out)) {
                     $charset = '<meta charset="' . $charset_out[3] . '">';
                 } else {
@@ -275,13 +276,13 @@ class Client extends Controller implements Controller_Interface
             $iife_clients = array();
             $multi_client_hint = (count($client_sources) > 1 && function_exists('is_user_logged_in') && is_user_logged_in());
             foreach ($client_sources as $version => $sources) {
-                $iife_clients[$version] = '(function('.(($multi_client_hint) ? '/* '.$version.' */' : '').'){';
+                $iife_clients[$version] = '!function('.(($multi_client_hint) ? '/* '.$version.' */' : '').'){';
                 foreach ($sources as $source) {
                     if (file_exists($source)) {
                         $iife_clients[$version] .= file_get_contents($source);
                     }
                 }
-                $iife_clients[$version] .= '})();';
+                $iife_clients[$version] .= '}();';
             }
 
             // show hint when using multiple client versions
@@ -307,10 +308,27 @@ class Client extends Controller implements Controller_Interface
         return $client_html;
     }
 
+    final private function config_fill_empty($n, $index)
+    {
+        $empty_params = array();
+        if ($n < $index) {
+            $count = ($index - $n);
+            if ($count > 2) { // more than 2 empty positions, use repeat compression
+                $empty_params[] = '__O10N_NULL:'.$count.'__';
+            } else {
+                for ($i = 0; $i < $count; $i++) {
+                    $empty_params[] = '__O10N_NULL__';
+                }
+            }
+        }
+
+        return $empty_params;
+    }
+
     /**
      * Return client config parameter
      */
-    final private function get_config()
+    final public function get_config()
     {
 
         // enable config extension
@@ -319,34 +337,16 @@ class Client extends Controller implements Controller_Interface
         // sort config by key
         ksort($this->loaded_config);
 
-        // fill empty positions in config
-        function fill_empty($n, $index)
-        {
-            $empty_params = array();
-            if ($n < $index) {
-                $count = ($index - $n);
-                if ($count > 2) { // more than 2 empty positions, use repeat compression
-                    $empty_params[] = '__O10N_NULL:'.$count.'__';
-                } else {
-                    for ($i = 0; $i < $count; $i++) {
-                        $empty_params[] = '__O10N_NULL__';
-                    }
-                }
-            }
-
-            return $empty_params;
-        }
-
         // construct config parameter
         $config_param = array();
         $n = 0;
         foreach ($this->loaded_config as $index => $subconfig) {
-
+            
             // sort config by key
             ksort($subconfig);
 
             // empty positions
-            $empty = fill_empty($n, $index);
+            $empty = $this->config_fill_empty($n, $index);
             if (!empty($empty)) {
                 $config_param = array_merge($config_param, $empty);
             }
@@ -357,7 +357,7 @@ class Client extends Controller implements Controller_Interface
             foreach ($subconfig as $subindex => $settings) {
 
                 // empty positions
-                $empty = fill_empty($nn, $subindex);
+                $empty = $this->config_fill_empty($nn, $subindex);
                 if (!empty($empty)) {
                     $config_param[$config_index] = array_merge($config_param[$config_index], $empty);
                 }

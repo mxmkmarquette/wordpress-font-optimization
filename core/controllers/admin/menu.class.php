@@ -89,7 +89,7 @@ class AdminMenu extends Controller implements Controller_Interface
      */
     final public function admin_icon($color = false)
     {
-        $icon = file_get_contents(O10N_PATH.'public/100.svg');
+        $icon = file_get_contents(O10N_CORE_PATH.'public/100.svg');
         $icon = 'data:image/svg+xml;base64,'.base64_encode($this->menu_svg_color($icon, $color));
 
         return $icon;

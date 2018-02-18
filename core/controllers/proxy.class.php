@@ -155,11 +155,11 @@ class Proxy extends Controller implements Controller_Interface
             $cacheHash = $this->cache_hash($type, $url);
 
             // get cache file and verify if it exists
-            $cacheFile = $this->cache->path('proxy', $cacheStore, $cacheHash);
+            $cacheFile = $this->cache->path($cacheStore, 'proxy', $cacheHash);
 
             // verify if proxy cache exists
             if ($cacheFile) {
-                $meta = $this->cache->meta('proxy', $cacheStore, $cacheHash, true);
+                $meta = $this->cache->meta($cacheStore, 'proxy', $cacheHash, true);
                 $update_interval = (isset($meta[3]) && is_numeric($meta[3]) && $meta[3] > 0) ? $meta[3] : 3600; // expire header
 
                 // update proxy cache when older than 1 hour
@@ -175,10 +175,10 @@ class Proxy extends Controller implements Controller_Interface
                 }
 
                 if (defined('O10N_DEBUG') && O10N_DEBUG) {
-                    $this->debugList[$url] = $this->cache->url('proxy', $cacheStore, $cacheHash);
+                    $this->debugList[$url] = $this->cache->url($cacheStore, 'proxy', $cacheHash);
                 }
 
-                $proxyUrl = $this->cache->url('proxy', $cacheStore, $cacheHash);
+                $proxyUrl = $this->cache->url($cacheStore, 'proxy', $cacheHash);
                 $proxyHash = $cacheHash;
             } else {
 
@@ -191,7 +191,7 @@ class Proxy extends Controller implements Controller_Interface
                 $this->proxyList[$url] = array('type' => $type, 'hash' => $cacheHash);
 
                 if (defined('O10N_DEBUG') && O10N_DEBUG) {
-                    $this->debugList[$url] = $this->cache->url('proxy', $cacheStore, $cacheHash);
+                    $this->debugList[$url] = $this->cache->url($cacheStore, 'proxy', $cacheHash);
                 }
             }
         }
@@ -200,6 +200,13 @@ class Proxy extends Controller implements Controller_Interface
             case "hash":
                 return $proxyHash;
             break;
+            case "url":
+                if ($proxyHash) {
+                    return $this->cache->url($cacheStore, 'proxy', $proxyHash);
+                } else {
+                    return $url;
+                }
+            break;
             case "filedata":
 
                 // proxy on the fly
@@ -207,8 +214,8 @@ class Proxy extends Controller implements Controller_Interface
                     $this->proxy($type, $url, $cacheHash);
                 }
 
-                $meta = $this->cache->meta('proxy', $cacheStore, $cacheHash, true);
-                $data = $this->cache->get('proxy', $cacheStore, $cacheHash);
+                $meta = $this->cache->meta($cacheStore, 'proxy', $cacheHash, true);
+                $data = $this->cache->get($cacheStore, 'proxy', $cacheHash);
 
                 return array($data,$meta);
             break;
@@ -246,10 +253,10 @@ class Proxy extends Controller implements Controller_Interface
         }
 
         // cache store
-        $cacheStore = 'proxy:' . $type;
+        $cacheStore = $type;
 
         // return meta
-        return $this->cache->meta('proxy', $cacheStore, $cacheHash, true);
+        return $this->cache->meta($cacheStore, 'proxy', $cacheHash, true);
     }
 
     /**
@@ -267,7 +274,7 @@ class Proxy extends Controller implements Controller_Interface
         }
 
         // cache store
-        $cacheStore = 'proxy:' . $type;
+        $cacheStore = $type;
 
         // apply proxy URL filter
         $filteredUrl = apply_filters('o10n_proxy_url', $url, $type);
@@ -332,7 +339,7 @@ class Proxy extends Controller implements Controller_Interface
         }
 
         // save proxy cache file
-        $this->cache->put('proxy', $cacheStore, $cacheHash, $assetContent, false, false, false, array(
+        $this->cache->put($cacheStore, 'proxy', $cacheHash, $assetContent, false, false, false, array(
             $lastModified,
             $ETag,
             $file_hash,
@@ -355,10 +362,10 @@ class Proxy extends Controller implements Controller_Interface
             foreach ($this->updateList as $url => $asset) {
                 
                 // cache store
-                $cacheStore = 'proxy:' . $asset['type'];
+                $cacheStore = $asset['type'];
 
                 // get cache file meta
-                $meta = $this->cache->meta('proxy', $cacheStore, $asset['hash'], true);
+                $meta = $this->cache->meta($cacheStore, 'proxy', $asset['hash'], true);
 
                 // update asset content?
                 $updateContent = false;
@@ -410,14 +417,14 @@ class Proxy extends Controller implements Controller_Interface
                 if ($updateContent) {
 
                     // delete cache file
-                    $this->cache->delete('proxy', $cacheStore, $asset['hash']);
+                    $this->cache->delete($cacheStore, 'proxy', $asset['hash']);
 
                     // add to proxy list
                     $this->proxyList[$url] = $asset;
                 } else {
 
                     // preserve cache file
-                    $this->cache->preserve('proxy', $cacheStore, $asset['hash'], $updateInterval);
+                    $this->cache->preserve($cacheStore, 'proxy', $asset['hash'], $updateInterval);
                 }
             }
         }

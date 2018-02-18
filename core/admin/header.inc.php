@@ -19,7 +19,11 @@ if (!defined('ABSPATH')) {
     <div class="other-notices-notice" style="visibility:hidden"><strong class="count"></strong> notices from other plugins have been hidden. <a href="javascript:void(0);" class="show" data-hide="Hide notices">Show notices</a></div>
     <div class="other-notices" style="display:none;"><div class="wp-header-end"></div></div>
 
-    <h1 class="o10n-title"><strong><?php print $view->module->name(); ?></strong></h1>
+    <h1 class="o10n-title"><strong><?php if ($view->module) {
+            print $view->module->name();
+        } else {
+            print 'WordPress Performance Optimization';
+        } ?></strong></h1>
 
     <div id="o10n-notices"><?php
         /** Display optimization errors / notices */

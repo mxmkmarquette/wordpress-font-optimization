@@ -20,11 +20,6 @@
             "type": "boolean",
             "default": false
         },
-        "requestAnimationFrame": {
-            "title": "Render using requestAnimationFrame",
-            "type": "boolean",
-            "default": false
-        },
         "filter": {
             "title": "CSS Async Filter",
             "type": "object",
@@ -89,27 +84,16 @@
                                 "default": false
                             },
                             "load_position": {
-                                "title": "Position where async downloading of CSS will start.",
+                                "title": "Load position of CSS",
                                 "type": "string",
-                                "enum": [
-                                    "header",
-                                    "timing"
-                                ],
+                                "enum": ["header", "timing"],
                                 "default": "header"
                             },
-                            "render_position": {
-                                "title": "Position where async rendering of CSS will start.",
-                                "type": "string",
-                                "enum": [
-                                    "header",
-                                    "timing"
-                                ],
-                                "default": "header"
+                            "load_timing": {
+                                "$ref": "timed-exec.json#/definitions/timingMethods"
                             },
-                            "requestAnimationFrame": {
-                                "title": "Render using requestAnimationFrame",
-                                "type": "boolean",
-                                "default": false
+                            "render_timing": {
+                                "$ref": "timed-exec.json#/definitions/renderTiming"
                             },
                             "localStorage": {
                                 "title": "Override stylesheet cache configuration",
@@ -162,22 +146,16 @@
             "additionalProperties": false
         },
         "load_position": {
-            "title": "Position where async downloading of CSS will start.",
+            "title": "Load position of CSS",
             "type": "string",
-            "enum": [
-                "header",
-                "footer"
-            ],
+            "enum": ["header", "timing"],
             "default": "header"
         },
-        "render_position": {
-            "title": "Position where async rendering of CSS will start.",
-            "type": "string",
-            "enum": [
-                "header",
-                "footer"
-            ],
-            "default": "header"
+        "load_timing": {
+            "$ref": "timed-exec.json#/definitions/timingMethods"
+        },
+        "render_timing": {
+            "$ref": "timed-exec.json#/definitions/renderTiming"
         },
         "localStorage": {
             "title": "HTML5 localStorage cache",

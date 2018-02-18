@@ -119,7 +119,7 @@ $this->form_start(__('Web Font Optimization', 'o10n'), 'fonts');
 
 			            <div class="suboption" data-ns="fonts.fontface.render_timing"<?php $visible('fonts.fontface.render_timing', ($get('fonts.fontface.render_timing.type') === 'media'));  ?> data-ns-condition="fonts.fontface.render_timing.type==media">
 				            <h5 class="h">&nbsp;Media Query</h5>
-				            <input type="text" name="o10n[fonts.fontface.render_timing.media]" value="<?php $value('fonts.fontface.render_timing.media'); ?>" />
+				            <input type="text" name="o10n[fonts.fontface.render_timing.media]" value="<?php $value('fonts.fontface.render_timing.media'); ?>" style="width:400px;max-width:100%;" />
 				            <p class="description">Enter a <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries" target="_blank">Media Query</a> for conditional font rendering, e.g. render a font on mobile device orientation change.</p>
 			            </div>
 
@@ -133,7 +133,7 @@ $this->form_start(__('Web Font Optimization', 'o10n'), 'fonts');
         <td>
         <?php if (!$module_loaded('http2')) {
     ?>
-<p class="description">Install the <a href="<?php print esc_url(add_query_arg(array('s' => 'optimalisatie', 'tab' => 'search', 'type' => 'author'), admin_url('plugin-install.php'))); ?>">HTTP/2 Optimization</a> plugin to use this feature.</p>
+<p class="description">Install the <a href="<?php print esc_url(add_query_arg(array('s' => 'o10n', 'tab' => 'search', 'type' => 'author'), admin_url('plugin-install.php'))); ?>">HTTP/2 Optimization</a> plugin to use this feature.</p>
 <?php
 } else {
         ?>
@@ -244,7 +244,7 @@ $this->form_start(__('Web Font Optimization', 'o10n'), 'fonts');
             <p class="description" style="margin-bottom:1em;">This option filters out existing WebFontConfig variables and webfont.js scripts from both HTML and javascript.</p>
             <?php if (!$module_loaded('js')) {
     ?>
-<p class="description">Install the <a href="<?php print esc_url(add_query_arg(array('s' => 'optimalisatie', 'tab' => 'search', 'type' => 'author'), admin_url('plugin-install.php'))); ?>">Javascript Optimization</a> plugin to remove the font loader from javascript file sources.</p>
+<p class="description">Install the <a href="<?php print esc_url(add_query_arg(array('s' => 'o10n', 'tab' => 'search', 'type' => 'author'), admin_url('plugin-install.php'))); ?>">Javascript Optimization</a> plugin to remove the font loader from javascript file sources.</p>
 <?php
 } else {
         ?>
@@ -303,7 +303,7 @@ $this->form_start(__('Web Font Optimization', 'o10n'), 'fonts');
         	<p class="description">Remove font CSS links and <code>@import</code> from HTML and CSS.</p>
 <?php if (!$module_loaded('css')) {
            ?>
-<p class="description">Install the <a href="<?php print esc_url(add_query_arg(array('s' => 'optimalisatie', 'tab' => 'search', 'type' => 'author'), admin_url('plugin-install.php'))); ?>">CSS Optimization</a> plugin to remove <code>@import</code> links from CSS.</p>
+<p class="description">Install the <a href="<?php print esc_url(add_query_arg(array('s' => 'o10n', 'tab' => 'search', 'type' => 'author'), admin_url('plugin-install.php'))); ?>">CSS Optimization</a> plugin to remove <code>@import</code> links from CSS.</p>
 <?php
        }
 ?>
@@ -353,7 +353,7 @@ $this->form_start(__('Web Font Optimization', 'o10n'), 'fonts');
         <td>
         <?php if (!$module_loaded('css')) {
     ?>
-<p class="description">Install the <a href="<?php print esc_url(add_query_arg(array('s' => 'optimalisatie', 'tab' => 'search', 'type' => 'author'), admin_url('plugin-install.php'))); ?>">CSS Optimization</a> plugin to use this feature.</p>
+<p class="description">Install the <a href="<?php print esc_url(add_query_arg(array('s' => 'o10n', 'tab' => 'search', 'type' => 'author'), admin_url('plugin-install.php'))); ?>">CSS Optimization</a> plugin to use this feature.</p>
 <?php
 } else {
         ?>

@@ -150,6 +150,8 @@ class Cache extends Controller implements Controller_Interface
             if ($index_id && is_array($index_id)) {
                 $suffix = $index_id[1];
                 $index_id = $index_id[0];
+            } else {
+                $suffix = false;
             }
 
             // verify ID
@@ -231,6 +233,8 @@ class Cache extends Controller implements Controller_Interface
             if ($index_id && is_array($index_id)) {
                 $suffix = $index_id[1];
                 $index_id = $index_id[0];
+            } else {
+                $suffix = false;
             }
 
             // verify ID
@@ -282,6 +286,8 @@ class Cache extends Controller implements Controller_Interface
             if ($index_id && is_array($index_id)) {
                 $suffix = $index_id[1];
                 $index_id = $index_id[0];
+            } else {
+                $suffix = false;
             }
 
             // verify ID
@@ -593,8 +599,8 @@ class Cache extends Controller implements Controller_Interface
         $db->query("UPDATE `".$table."` SET `date`='".(int)$filemtime."' 
             WHERE `module`='".(int)$module_index."' 
             AND `store`='".(int)$store['index']."' 
-            AND `hash_a`=conv(substring((".$db->escape($hash)."),1,16),16,-10)
-            AND `hash_b`=conv(right((".$db->escape($hash)."),16),16,-10)
+            AND `hash_a`=conv(substring(('".$db->escape($hash)."'),1,16),16,-10)
+            AND `hash_b`=conv(right(('".$db->escape($hash)."'),16),16,-10)
             LIMIT 1", 'cache');
 
         return true;
@@ -786,8 +792,8 @@ class Cache extends Controller implements Controller_Interface
             $db->query("DELETE FROM `".$table."`
                 WHERE `module`='".(int)$module_index."' 
                 AND `store`='".(int)$store['index']."' 
-                AND `hash_a`=conv(substring((".$db->escape($hash)."),1,16),16,-10)
-                AND `hash_b`=conv(right((".$db->escape($hash)."),16),16,-10)
+                AND `hash_a`=conv(substring(('".$db->escape($hash)."'),1,16),16,-10)
+                AND `hash_b`=conv(right(('".$db->escape($hash)."'),16),16,-10)
                 LIMIT 1", 'cache');
         }
 
@@ -924,8 +930,8 @@ class Cache extends Controller implements Controller_Interface
         $cache_entry = $db->fetch("SELECT `id`,`suffix` FROM `".$this->table_index."` WHERE 
             `module`='".(int)$module_index."' 
             AND `store`='".(int)$store['index']."' 
-            AND `hash_a`=conv(substring((".$db->escape($hash)."),1,16),16,-10)
-            AND `hash_b`=conv(right((".$db->escape($hash)."),16),16,-10)
+            AND `hash_a`=conv(substring(('".$db->escape($hash)."'),1,16),16,-10)
+            AND `hash_b`=conv(right(('".$db->escape($hash)."'),16),16,-10)
             LIMIT 1");
 
         // fetch result
@@ -962,11 +968,11 @@ class Cache extends Controller implements Controller_Interface
         $db = & $this->db;
 
         // create index row
-        $db->query("INSERT INTO `".$this->table_index."` (`module`,`store`,`hash`,`hash_a`,`hash_b`,`suffix`) 
+        $db->query("REPLACE INTO `".$this->table_index."` (`module`,`store`,`hash`,`hash_a`,`hash_b`,`suffix`) 
                     VALUES (
-                        '".(int)$module_index."', ".(int)$store['index']."',UNHEX('".$db->escape($hash)."'),
-                        conv(substring((".$db->escape($hash)."),1,16),16,-10),
-                        conv(right((".$db->escape($hash)."),16),16,-10),
+                        '".(int)$module_index."', ".(int)$store['index'].",UNHEX('".$db->escape($hash)."'),
+                        conv(substring(('".$db->escape($hash)."'),1,16),16,-10),
+                        conv(right(('".$db->escape($hash)."'),16),16,-10),
                         '".$db->escape($suffix)."'
                     )", 'cache');
 
@@ -1236,7 +1242,7 @@ class Cache extends Controller implements Controller_Interface
 
             // empty database
             foreach ($tables as $table) {
-                $this->db->query("TRUNCATE `" . $table . "`");
+                $db->query("TRUNCATE `" . $table . "`", 'cache');
             }
         } else {
             $module_index = $this->module_index[$module];

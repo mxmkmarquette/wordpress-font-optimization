@@ -84,7 +84,7 @@ class Db extends Controller implements Controller_Interface
                 return $this->query($query);
             }
 
-            throw new Exception('MySQL query failed. ' . $last_error[0] . ': ' . $last_error[1], 'db');
+            throw new Exception('MySQL query failed. ' . $last_error[0] . ': ' . $last_error[1] . ' Query: ' . esc_html($query), 'db');
         }
 
         return $this->last_result;
@@ -122,9 +122,9 @@ class Db extends Controller implements Controller_Interface
         }
 
         if ($this->mysqli) {
-            return $result->insert_id;
+            return @\mysqli_insert_id($this->wpdb->dbh);
         } else {
-            return @\mysql_insert_id($result);
+            return @\mysql_insert_id($this->wpdb->dbh);
         }
     }
 

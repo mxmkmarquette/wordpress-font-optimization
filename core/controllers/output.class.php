@@ -113,6 +113,15 @@ class Output extends Controller implements Controller_Interface
             }
         }
 
+        // apply final HTML filters
+        try {
+            $buffer = apply_filters('o10n_html_final', $buffer);
+        } catch (Exception $err) {
+            if ($err->isFatal()) {
+                return $this->fatal_error($err);
+            }
+        }
+
         return $buffer;
     }
 

@@ -23,7 +23,20 @@ list($base_tab, $active_tab, $active_subtab) = $view->active_tab();
 	<nav class="nav-tab-wrapper">
 <?php
 foreach ($tabs as $tabkey => $tabinfo) {
-    $class = ($tabkey === $active_tab) ? ' nav-tab-active' : '';
+    $class = '';
+    if (isset($tabinfo['pagekey']) && $tabinfo['pagekey']) {
+        if (isset($_GET['page']) && $_GET['page'] === 'o10n-' . $tabinfo['pagekey']) {
+            $class = ' nav-tab-active';
+
+            $tabs[$tabkey]['selected'] = true;
+        }
+    } elseif (!isset($_GET['page']) || $_GET['page'] === $base_tab) {
+        if ($tabkey === $active_tab) {
+            $class = ' nav-tab-active';
+            $tabs[$tabkey]['selected'] = true;
+        }
+    }
+    
     if (isset($tabinfo['class'])) {
         $class .= ' ' . $tabinfo['class'];
     }
@@ -31,7 +44,9 @@ foreach ($tabs as $tabkey => $tabinfo) {
     $params = array();
 
     // WPO plugin
-    if (defined('O10N_WPO_VERSION')) {
+    if (isset($tabinfo['pagekey'])) {
+        $params['page'] = 'o10n-'.$tabinfo['pagekey'];
+    } elseif (defined('O10N_WPO_VERSION')) {
         switch ($tabkey) {
             case "intro":
                 $params['page'] = $base_tab . '-' . $tabkey;
@@ -69,7 +84,7 @@ foreach ($tabs as $tabkey => $tabinfo) {
 
 foreach ($tabs as $tabkey => $tabinfo) {
     if (isset($tabinfo['subtabs'])) {
-        print '<nav class="nav-tab-wrapper nav-subtab-wrapper"'.(($tabkey !== $active_tab) ? ' style="display:none;"' : '').'>';
+        print '<nav class="nav-tab-wrapper nav-subtab-wrapper"'.((!isset($tabinfo['selected']) || !$tabinfo['selected']) ? ' style="display:none;"' : '').'>';
 
         foreach ($tabinfo['subtabs'] as $tabkey => $tabinfo) {
             $class = ($tabkey === $active_subtab) ? ' nav-tab-active' : '';

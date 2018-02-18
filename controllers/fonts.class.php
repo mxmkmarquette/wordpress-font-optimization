@@ -151,7 +151,9 @@ class Fonts extends Controller implements Controller_Interface
 
             // client config
             $client_config = array();
-            $client_config[$this->client->config_index('fonts', 'config')] = $fontface_config;
+            if (!empty($fontface_config)) {
+                $client_config[$this->client->config_index('fonts', 'config')] = $fontface_config;
+            }
 
             $load_position = $this->options->get('fonts.fontface.load_position');
             if ($load_position !== 'header') {
@@ -228,7 +230,9 @@ class Fonts extends Controller implements Controller_Interface
             }
 
             // set config
-            $this->client->set_config('fonts', 'fontface', $client_config);
+            if (!empty($client_config)) {
+                $this->client->set_config('fonts', 'fontface', $client_config);
+            }
         }
 
         // add font config loader module
