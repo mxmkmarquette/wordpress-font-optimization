@@ -393,8 +393,8 @@ class AdminForm extends Controller implements Controller_Interface
                 $option['json_key'] = $schema_path . '.' . $key;
 
                 // option value
-                $option_value = $this->get($option['json_key'], $json, false);
-                if ($option_value === null) {
+                $option_value = $this->get($option['json_key']);
+                if (is_null($option_value) || !isset($option_value)) {
                     $option['checked'] = $option['default_checked'];
                 } else {
                     $option['checked'] = ($option_value) ? true : false;
@@ -409,8 +409,8 @@ class AdminForm extends Controller implements Controller_Interface
                 // JSON key
                 $option['json_key'] = $schema_path . '.' . $key;
 
-                $option_value = $this->get($option['json_key'], $json, false);
-                if ($option_value === null) {
+                $option_value = $this->get($option['json_key']);
+                if (is_null($option_value) || !isset($option_value)) {
                     $option['checked'] = $option['default_checked'];
                 } else {
                     // checkbox state

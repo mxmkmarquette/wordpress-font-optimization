@@ -96,6 +96,18 @@ class Options extends Controller implements Controller_Interface
     }
 
     /**
+     * Set options dynamically without saving to database
+     *
+     * @param array $options Options to add
+     */
+    final public function set($options)
+    {
+        foreach ($options as $key => $value) {
+            $this->data[$key] = $value;
+        }
+    }
+
+    /**
      * Get JSON option
      *
      * @param  string $key     Option key.

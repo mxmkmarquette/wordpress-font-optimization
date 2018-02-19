@@ -207,9 +207,6 @@
         "cdn": {
             "$ref": "cdn.json#"
         },
-        "cssmin": {
-            "$ref": "css-cssmin.json#"
-        },
         "clean-css": {
             "$ref": "css-clean-css.json#"
         },

@@ -10,6 +10,9 @@
             "type": "boolean",
             "default": false
         },
+        "cssmin": {
+            "$ref": "css-cssmin.json#"
+        },
         "inline_assets": {
             "title": "Inline assets using CSS data-URI.",
             "oneOf": [{

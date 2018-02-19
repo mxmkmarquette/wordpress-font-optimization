@@ -233,11 +233,6 @@ class Core
 
         if ($class_name_lowercase !== 'admin' && strpos($class_name_lowercase, 'admin') === 0) {
 
-            // forbidden outside /wp-admin/
-            if (!is_admin() && !in_array($class_name, $this->controllers['admin_global'])) {
-                throw new Exception('Admin controller loaded outside admin environment.', 'core');
-            }
-
             // admin controller
             $class_file = O10N_CORE_PATH . 'controllers/admin/'.substr($class_name_lowercase, 5).'.class.php';
         } else {

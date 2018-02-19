@@ -36,6 +36,7 @@ class AdminView extends Controller implements Controller_Interface
             'AdminForm',
             'file',
             'json',
+            'options',
             'env'
         ));
     }

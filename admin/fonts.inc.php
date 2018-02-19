@@ -65,6 +65,7 @@ $this->form_start(__('Web Font Optimization', 'o10n'), 'fonts');
 		            </div>
 
 		            <div class="suboption" data-ns="fonts.fontface"<?php $visible('fonts.fontface', ($get('fonts.fontface.load_timing.type') === 'inview'));  ?> data-ns-condition="fonts.fontface.load_timing.type==inview">
+		            	<p class="poweredby">Powered by <a href="https://github.com/camwiegert/in-view" target="_blank">in-view.js</a><span class="star"><a class="github-button" data-manual="1" href="https://github.com/camwiegert/in-view" data-icon="octicon-star" data-show-count="true" aria-label="Star camwiegert/in-view on GitHub">Star</a></span></p>
 			            <h5 class="h">&nbsp;CSS selector</h5>
 			            <input type="text" name="o10n[fonts.fontface.load_timing.selector]" value="<?php $value('fonts.fontface.load_timing.selector'); ?>" />
 			            <p class="description">Enter the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector" target="_blank">CSS selector</a> of the element to watch.</p>
@@ -106,6 +107,7 @@ $this->form_start(__('Web Font Optimization', 'o10n'), 'fonts');
 			            </div>
 
 			            <div class="suboption" data-ns="fonts.fontface.render_timing"<?php $visible('fonts.fontface.render_timing', ($get('fonts.fontface.render_timing.type') === 'inview'));  ?> data-ns-condition="fonts.fontface.render_timing.type==inview">
+			            	<p class="poweredby">Powered by <a href="https://github.com/camwiegert/in-view" target="_blank">in-view.js</a><span class="star"><a class="github-button" data-manual="1" href="https://github.com/camwiegert/in-view" data-icon="octicon-star" data-show-count="true" aria-label="Star camwiegert/in-view on GitHub">Star</a></span></p>
 				            <h5 class="h">&nbsp;CSS selector</h5>
 				            <input type="text" name="o10n[fonts.fontface.render_timing.selector]" value="<?php $value('fonts.fontface.render_timing.selector'); ?>" />
 				            <p class="description">Enter the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector" target="_blank">CSS selector</a> of the element to watch.</p>

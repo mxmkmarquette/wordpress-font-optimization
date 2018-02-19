@@ -278,7 +278,7 @@ final class Module implements Module_Interface
         $class_file = false;
 
         if ($class_name_lowercase !== 'admin' && strpos($class_name_lowercase, 'admin') === 0) {
-
+            
             // admin controller
             if ($this->admin_controllers && in_array($class_name, $this->admin_controllers)) {
                 if (!is_admin()) {
@@ -286,7 +286,6 @@ final class Module implements Module_Interface
                 }
                 $class_file = $this->dir_path . 'controllers/admin/'.substr($class_name_lowercase, 5).'.class.php';
             } elseif ($this->admin_global_controllers && in_array($class_name, $this->admin_global_controllers)) {
-                
                 // global admin controller
                 $class_file = $this->dir_path . 'controllers/admin/'.substr($class_name_lowercase, 5).'.class.php';
             }

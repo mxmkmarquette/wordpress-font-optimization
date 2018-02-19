@@ -23,6 +23,9 @@
                     },
                     "clean-css": {
                         "$ref": "css-clean-css.json#"
+                    },
+                    "cssmin": {
+                        "$ref": "css-cssmin.json#"
                     }
                 },
                 "required": [
