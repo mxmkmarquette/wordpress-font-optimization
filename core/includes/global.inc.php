@@ -6,7 +6,7 @@ namespace O10n;
  *
  * @package    optimization
  * @subpackage optimization/controllers
- * @author     o10n-x <info@optimization.team>
+ * @author     Optimization.Team <info@optimization.team>
  */
 
 // return optimization controller

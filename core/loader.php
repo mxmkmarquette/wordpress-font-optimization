@@ -6,7 +6,7 @@ namespace O10n;
  *
  * @package    optimization
  * @subpackage optimization/controllers
- * @author     o10n-x <info@optimization.team>
+ * @author     Optimization.Team <info@optimization.team>
  * @link       https://github.com/o10n-x/
  */
 
@@ -30,7 +30,7 @@ if (version_compare(PHP_VERSION, '5.4', '<')) {
 
     return;
 } else {
-    define('O10N_CORE_VERSION', '0.0.4');
+    define('O10N_CORE_VERSION', '0.0.5');
     define('O10N_CORE_URI', \plugin_dir_url(__FILE__));
     define('O10N_CORE_PATH', \plugin_dir_path(__FILE__));
 

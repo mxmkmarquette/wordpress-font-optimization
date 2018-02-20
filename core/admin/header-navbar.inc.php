@@ -122,7 +122,7 @@ foreach ($tabs as $tabkey => $tabinfo) {
             if (isset($tabinfo['href'])) {
                 $url = $tabinfo['href'];
             } else {
-                $url = add_query_arg($params, admin_url((isset($tabinfo['base'])) ? $tabinfo['base'] : 'themes.php'));
+                $url = add_query_arg($params, admin_url((isset($tabinfo['base'])) ? $tabinfo['base'] : $admin_base));
             }
             echo '<a class="nav-tab'.$class.'" href="'.esc_attr($url).'">'.$tabinfo['title'].'</a>';
         }
