@@ -26,13 +26,11 @@ class Client extends Controller implements Controller_Interface
 
     // module key refereces
     private $modules = array(
-        'js',
         'localstorage',
         'proxy',
         'responsive',
         'inview',
-        'timed-exec',
-        'pwa'
+        'timed-exec'
     );
 
     // automatically load dependencies
@@ -67,6 +65,11 @@ class Client extends Controller implements Controller_Interface
      */
     protected function setup()
     {
+        // load index
+        $index_file = O10N_CORE_PATH . 'includes/json/config-index.json';
+        if (!file_exists($index_file)) {
+            throw new Exception('Client config schema missing.', 'core');
+        }
 
         // load index from cache
         $cachehash = md5('config-index:' . O10N_CORE_VERSION);
@@ -76,7 +79,7 @@ class Client extends Controller implements Controller_Interface
             $this->cache->preserve('core', 'config_index', $cachehash, (time() - 3600));
 
             $config_index = $this->cache->get('core', 'config_index', $cachehash, false, true);
-            if ($config_index && count($config_index === 2)) {
+            if ($config_index && count($config_index) === 3 && $config_index[2] === filemtime($index_file)) {
                 $this->config_index = $config_index[0];
                 $this->subconfig_index = $config_index[1];
             }
@@ -84,12 +87,6 @@ class Client extends Controller implements Controller_Interface
 
         // load index from JSON files
         if (!$this->config_index) {
-
-            // load index
-            $index_file = O10N_CORE_PATH . 'includes/json/config-index.json';
-            if (!file_exists($index_file)) {
-                throw new Exception('Client config schema missing.', 'core');
-            }
             $config_index = $this->file->get_json($index_file, true);
             if ($config_index === false) {
                 throw new Exception('Client config index contains invalid JSON', 'core');
@@ -120,7 +117,7 @@ class Client extends Controller implements Controller_Interface
             }
 
             // save cache (PHP 7 Opcache)
-            $this->cache->put('core', 'config_index', $cachehash, array($this->config_index,$this->subconfig_index), false, false, true);
+            $this->cache->put('core', 'config_index', $cachehash, array($this->config_index,$this->subconfig_index,filemtime($index_file)), false, false, true);
         }
 
 

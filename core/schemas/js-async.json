@@ -16,18 +16,16 @@
             "default": false
         },
         "load_position": {
-            "title": "Position where async downloading of scripts will start.",
+            "title": "Load position of CSS",
             "type": "string",
-            "enum": [
-                "header",
-                "footer"
-            ],
+            "enum": ["header", "timing"],
             "default": "header"
         },
-        "abide": {
-            "title": "Abide WordPress dependency configuration.",
-            "type": "boolean",
-            "default": true
+        "load_timing": {
+            "$ref": "timed-exec.json#/definitions/timingMethods"
+        },
+        "exec_timing": {
+            "$ref": "timed-exec.json#/definitions/renderTiming"
         },
         "jQuery_stub": {
             "title": "Include jQuery stub to load jQuery async while supporting inline jQuery scripts.",
@@ -121,23 +119,17 @@
                                 "type": "boolean",
                                 "default": false
                             },
-                            "abide": {
-                                "title": "Abide WordPress dependency configuration.",
-                                "type": "boolean",
-                                "default": true
-                            },
                             "load_position": {
-                                "title": "Position where async downloading of CSS will start.",
+                                "title": "Load position of CSS",
                                 "type": "string",
-                                "enum": [
-                                    "header",
-                                    "footer"
-                                ],
+                                "enum": ["header", "timing"],
                                 "default": "header"
                             },
-                            "async_exec": {
-                                "title": "Async execution of javascript.",
-                                "$ref": "js-async.json#/definitions/asyncExec"
+                            "load_timing": {
+                                "$ref": "timed-exec.json#/definitions/timingMethods"
+                            },
+                            "exec_timing": {
+                                "$ref": "timed-exec.json#/definitions/renderTiming"
                             },
                             "localStorage": {
                                 "title": "Override script cache configuration",

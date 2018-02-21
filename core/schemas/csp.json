@@ -26,7 +26,7 @@
                 "minLength": 1
             }]
         },
-        "reportTo": {
+        "report-to": {
             "title": "Reporting API",
             "type": "object",
             "properties": {
