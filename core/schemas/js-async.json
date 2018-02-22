@@ -16,7 +16,7 @@
             "default": false
         },
         "load_position": {
-            "title": "Load position of CSS",
+            "title": "Load position of scripts",
             "type": "string",
             "enum": ["header", "timing"],
             "default": "header"
@@ -25,7 +25,7 @@
             "$ref": "timed-exec.json#/definitions/timingMethods"
         },
         "exec_timing": {
-            "$ref": "timed-exec.json#/definitions/renderTiming"
+            "$ref": "timed-exec.json#/definitions/execTiming"
         },
         "jQuery_stub": {
             "title": "Include jQuery stub to load jQuery async while supporting inline jQuery scripts.",
@@ -119,8 +119,13 @@
                                 "type": "boolean",
                                 "default": false
                             },
+                            "noscript": {
+                                "title": "Add fallback script via <noscript>",
+                                "type": "boolean",
+                                "default": false
+                            },
                             "load_position": {
-                                "title": "Load position of CSS",
+                                "title": "Load position of scripts",
                                 "type": "string",
                                 "enum": ["header", "timing"],
                                 "default": "header"
@@ -129,7 +134,7 @@
                                 "$ref": "timed-exec.json#/definitions/timingMethods"
                             },
                             "exec_timing": {
-                                "$ref": "timed-exec.json#/definitions/renderTiming"
+                                "$ref": "timed-exec.json#/definitions/timingMethods"
                             },
                             "localStorage": {
                                 "title": "Override script cache configuration",
@@ -308,7 +313,7 @@
                         "default": "inview"
                     },
                     "selector": {
-                        "title": "CSS selector",
+                    "title": "CSS selector",
                         "type": "string",
                         "minLength": 1
                     },

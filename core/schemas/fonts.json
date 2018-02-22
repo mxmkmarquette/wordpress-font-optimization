@@ -34,7 +34,7 @@
                     "$ref": "timed-exec.json#/definitions/timingMethods"
                 },
                 "render_timing": {
-                    "$ref": "timed-exec.json#/definitions/renderTiming"
+                    "$ref": "timed-exec.json#/definitions/execTiming"
                 },
                 "config": {
                     "title": "Font Face API configuration",
@@ -158,7 +158,7 @@
                                 "$ref": "timed-exec.json#/definitions/timingMethods"
                             },
                             "render_timing": {
-                                "$ref": "timed-exec.json#/definitions/renderTiming"
+                                "$ref": "timed-exec.json#/definitions/execTiming"
                             }
                         },
                         "required": ["families"],

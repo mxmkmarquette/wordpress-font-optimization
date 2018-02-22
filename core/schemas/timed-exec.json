@@ -125,13 +125,13 @@
                 "required": ["type", "media"]
             }]
         },
-        "renderTiming": {
-            "title": "Timed font render",
+        "execTiming": {
+            "title": "Timed exec config",
             "oneOf": [{
                 "type": "object",
                 "properties": {
                     "enabled": {
-                        "title": "Timed font render",
+                        "title": "Timed exec config",
                         "type": "boolean",
                         "enum": [false]
                     },
@@ -150,14 +150,14 @@
                     "type": "object",
                     "properties": {
                         "enabled": {
-                            "title": "Timed font render",
+                            "title": "Timed exec config",
                             "type": "boolean",
                             "enum": [true]
                         },
                         "type": {},
                         "frame": {},
-                        "timeout": {},
-                        "setTimeout": {},
+                    "timeout": {},
+                    "setTimeout": {},
                         "selector": {},
                         "offset": {},
                         "media": {}

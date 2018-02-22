@@ -62,6 +62,7 @@ class AdminMenu extends Controller implements Controller_Interface
                 $this->admin_icon(),
                 80
             );
+            remove_submenu_page('o10n', 'o10n');
         }
     }
 
@@ -72,11 +73,12 @@ class AdminMenu extends Controller implements Controller_Interface
     {
         global $submenu;
 
-        // move CSS Editor to end of list
-        foreach ($submenu['themes.php'] as $key => $item) {
-            if ($item[2] === 'o10n-css-editor') {
-                $submenu['themes.php'][] = $item;
-                unset($submenu['themes.php'][$key]);
+        // remove o10n submenu
+        if (isset($submenu['o10n'])) {
+            foreach ($submenu['o10n'] as $key => $item) {
+                if ($item[2] === 'o10n') {
+                    unset($submenu['o10n'][$key]);
+                }
             }
         }
     }

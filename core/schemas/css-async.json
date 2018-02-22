@@ -78,11 +78,6 @@
                                 "type": "boolean",
                                 "default": false
                             },
-                            "noscript": {
-                                "title": "Add fallback stylesheet via <noscript>",
-                                "type": "boolean",
-                                "default": false
-                            },
                             "load_position": {
                                 "title": "Load position of CSS",
                                 "type": "string",
@@ -93,7 +88,7 @@
                                 "$ref": "timed-exec.json#/definitions/timingMethods"
                             },
                             "render_timing": {
-                                "$ref": "timed-exec.json#/definitions/renderTiming"
+                                "$ref": "timed-exec.json#/definitions/timingMethods"
                             },
                             "localStorage": {
                                 "title": "Override stylesheet cache configuration",
@@ -155,7 +150,7 @@
             "$ref": "timed-exec.json#/definitions/timingMethods"
         },
         "render_timing": {
-            "$ref": "timed-exec.json#/definitions/renderTiming"
+            "$ref": "timed-exec.json#/definitions/execTiming"
         },
         "localStorage": {
             "title": "HTML5 localStorage cache",
