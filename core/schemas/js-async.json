@@ -95,13 +95,6 @@
                                 "type": "string",
                                 "minLength": 1
                             },
-                            "match_concat": {
-                                "title": "Match concatenation group key.",
-                                "type": "boolean",
-                                "enum": [
-                                    true
-                                ]
-                            },
                             "regex": {
                                 "title": "Use regular expression match",
                                 "type": "boolean",
@@ -116,11 +109,6 @@
                             },
                             "rel_preload": {
                                 "title": "Load script using rel=preload",
-                                "type": "boolean",
-                                "default": false
-                            },
-                            "noscript": {
-                                "title": "Add fallback script via <noscript>",
                                 "type": "boolean",
                                 "default": false
                             },
@@ -313,7 +301,7 @@
                         "default": "inview"
                     },
                     "selector": {
-                    "title": "CSS selector",
+                        "title": "CSS selector",
                         "type": "string",
                         "minLength": 1
                     },
