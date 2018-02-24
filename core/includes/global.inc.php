@@ -9,12 +9,6 @@ namespace O10n;
  * @author     Optimization.Team <info@optimization.team>
  */
 
-// return optimization controller
-function get($controller)
-{
-    return Core::get($controller);
-}
-
 // Add search replace filter
 function search_replace($search, $replace, $regex = false)
 {

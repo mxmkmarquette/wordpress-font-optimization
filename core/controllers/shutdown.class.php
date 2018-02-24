@@ -43,6 +43,14 @@ class Shutdown extends Controller implements Controller_Interface
     final public function add($callable)
     {
         if (!is_callable($callable)) {
+            if (is_array($callable)) {
+                if (isset($callable[1]) && is_string($callable[1])) {
+                    $callable = $callable[1];
+                }
+            }
+            if (!is_string($callable)) {
+                $callable = 'unknown';
+            }
             throw new Exception('Shutdown task not callable (' . (string)$callable . ')', 'core');
         }
         $this->tasks[] = $callable;

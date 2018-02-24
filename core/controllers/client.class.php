@@ -565,7 +565,7 @@ class Client extends Controller implements Controller_Interface
      * @param mixed $value Config value
      * @param array $keys  Config keys
      */
-    final public function config_array_data($value, $keys, $ignoreNull = true)
+    final public function config_array_data($value, $key, $subkeys, $ignoreNull = true)
     {
         if (!is_array($value)) {
             throw new Exception('Config value not array', 'client');
@@ -574,10 +574,10 @@ class Client extends Controller implements Controller_Interface
         $data_row = array();
         foreach ($keys as $param => $row_key) {
             if ($row_key === 'JSONKEY') {
-                $row_key = 'JSONKEY_' . strtoupper($param);
+                $row_key = 'C_KEY_' . strtoupper($param);
             }
 
-            $row_index_key = $this->config_index($row_key);
+            $row_index_key = $this->config_index($key, $row_key);
 
             // ignore null
             if ($ignoreNull && !isset($value[$param])) {

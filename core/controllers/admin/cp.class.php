@@ -24,7 +24,7 @@ class AdminCP extends Controller implements Controller_Interface
     {
         // instantiate controller
         return parent::construct($Core, array(
-            'error',
+            'admin',
             'options',
             'AdminAjax',
             'AdminClient'
@@ -78,7 +78,7 @@ class AdminCP extends Controller implements Controller_Interface
     public function show_notices()
     {
         // get notices
-        $notices = $this->error->get_notices();
+        $notices = $this->admin->get_notices();
 
         $persisted_notices = array();
         $noticerows = array();

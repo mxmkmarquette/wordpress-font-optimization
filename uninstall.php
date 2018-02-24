@@ -1,34 +1,29 @@
 <?php
+namespace O10n;
 
 /**
  * Fired when the plugin is uninstalled.
  *
  * @link       https://github.com/o10n-x/
- *
- * @package    o10n
+ * @package    optimization
  */
 
 if (! defined('WP_UNINSTALL_PLUGIN')) {
     exit;
 }
 
-// get O10N config
-$options = get_option('o10n', false);
+$plugin_path = dirname(__FILE__);
 
-// remove webfont config
-if ($options) {
-    $param = 'fonts.';
-
-    foreach ($options as $key => $value) {
-        if (strpos($key, $param) === 0) {
-            unset($options[$key]);
-        }
-    }
-
-    // remove empty options
-    if (empty($options)) {
-        delete_option('o10n');
-    }
+// load uninstall controller
+if (!class_exists('\O10n\Uninstall')) {
+    require $plugin_path . '/core/controllers/uninstall.php';
 }
 
-// todo clear cache directory
+// start uninstaller
+$uninstaller = new Uninstall('fonts');
+
+// delete settings
+$uninstaller->delete_settings('fonts');
+
+// delete cache tables
+$uninstaller->delete_tables();

@@ -34,9 +34,9 @@ class Cache extends Controller implements Controller_Interface
     private $cachedirs = array(); // cache directories
 
     private $table; // database table
-    private $table_index; // database table
 
     private $index_id_cache = array();
+    private $stats_cache = array();
 
     /**
      * Load controller
@@ -48,11 +48,12 @@ class Cache extends Controller implements Controller_Interface
     {
         // instantiate controller
         return parent::construct($Core, array(
-            // controllers to bind
+            'admin',
             'file',
             'options',
             'shutdown',
-            'db'
+            'db',
+            'env'
         ));
     }
 
@@ -91,17 +92,23 @@ class Cache extends Controller implements Controller_Interface
         // setup cache directory path
         $this->cachedir = $this->file->directory_path('', 'cache');
 
-        // cache database table
+        // cache database table name
         $this->table = $this->wpdb->prefix . 'o10n__cache';
-        $this->table_index = $this->wpdb->prefix . 'o10n__cache_index';
 
+        if (is_admin()) {
+            if (isset($_GET['flush'])) {
+                add_action('o10n_setup_completed', array($this, 'init_flush'));
+            }
 
-        add_action('o10n_setup_completed', array($this, 'test'));
-    }
+            // setup crons
+            if (function_exists('wp_next_scheduled')) {
 
-    public function test()
-    {
-        //$this->prune_expired();
+                // cache cleanup cron
+                if (!wp_next_scheduled('o10n_cron_prune_cache')) {
+                    wp_schedule_event(current_time('timestamp'), '30min', 'o10n_cron_prune_cache');
+                }
+            }
+        }
     }
 
     /**
@@ -346,14 +353,14 @@ class Cache extends Controller implements Controller_Interface
         // file extension
         $file_ext = $store['file_ext'];
 
+        // index id
+        $index_id = false;
+
         // hash ID index based file path
         if (isset($store['hash_id']) && $store['hash_id']) {
 
-            // index id
-            $index_id = false;
-
             // query id in cache table
-            $exists_id = $this->cachedb_get_hash_id($module, $store_key, $hash);
+            $exists_id = $this->query_hash_id($module, $store_key, $hash);
             $exists_suffix = false;
             if ($exists_id && is_array($exists_id)) {
                 $exists_suffix = $exists_id[1];
@@ -394,7 +401,7 @@ class Cache extends Controller implements Controller_Interface
 
             // create index id in cache table
             if (!$index_id) {
-                $index_id = $this->cachedb_create_hash_id($module, $store_key, $hash, $suffix);
+                $index_id = $this->create_hash_id($module, $store_key, $hash, $suffix);
             }
 
             // hash index data
@@ -505,22 +512,19 @@ class Cache extends Controller implements Controller_Interface
             $size += $gzsize;
         }
 
-        // database reference
-        $db = & $this->db;
-
         // hash ID index based file path
-        if (isset($store['hash_id']) && $store['hash_id']) {
+        if ($index_id) {
 
             // update cache entry
-            $db->query("UPDATE `".$this->table_index."` SET `date`='".$db->escape($time)."', `size`='".(int)($size)."',`suffix`='".$db->escape($suffix)."' WHERE `id`='".(int)($index_id)."' LIMIT 1", 'cache');
+            $this->db->query("UPDATE `".$this->index_table($module, $store_key)."` SET `date`=FROM_UNIXTIME('".$this->db->escape($time)."'), `size`='".(int)$size."',`suffix`='".$this->db->escape($suffix)."' WHERE `id`='".(int)$index_id."' LIMIT 1", array($this,'create_tables'));
         } else {
             
             // insert cache entry
-            $db->query("REPLACE INTO `".$this->table."` (`module`,`store`,`hash`,`hash_a`,`hash_b`,`date`,`size`) 
-                VALUES ('".(int)$module_index."', ".(int)$store['index'].",UNHEX('".$db->escape($hash)."'),
-                    conv(substring(('".$db->escape($hash)."'),1,16),16,-10),
-                    conv(right(('".$db->escape($hash)."'),16),16,-10),
-                    '".(int)$time."','".(int)$size."')", 'cache');
+            $this->db->query("REPLACE INTO `".$this->table."` (`module`,`store`,`hash`,`hash_a`,`hash_b`,`date`,`size`) 
+                VALUES ('".(int)$module_index."', ".(int)$store['index'].",UNHEX('".$this->db->escape($hash)."'),
+                    conv(substring(('".$this->db->escape($hash)."'),1,16),16,-10),
+                    conv(right(('".$this->db->escape($hash)."'),16),16,-10),
+                    FROM_UNIXTIME('".(int)$time."'),'".(int)$size."')", array($this,'create_tables'));
         }
 
         return $path;
@@ -585,23 +589,20 @@ class Cache extends Controller implements Controller_Interface
 
         $filemtime = filemtime($hash_file_path);
 
-        // database reference
-        $db = & $this->db;
-
         // hash ID index based file path
         if (isset($store['hash_id']) && $store['hash_id']) {
-            $table = $this->table_index;
+            $table = $this->index_table($module, $store_key);
         } else {
             $table = $this->table;
         }
 
         // update cache entry
-        $db->query("UPDATE `".$table."` SET `date`='".(int)$filemtime."' 
+        $this->db->query("UPDATE `".$table."` SET `date`=FROM_UNIXTIME('".(int)$filemtime."') 
             WHERE `module`='".(int)$module_index."' 
             AND `store`='".(int)$store['index']."' 
-            AND `hash_a`=conv(substring(('".$db->escape($hash)."'),1,16),16,-10)
-            AND `hash_b`=conv(right(('".$db->escape($hash)."'),16),16,-10)
-            LIMIT 1", 'cache');
+            AND `hash_a`=conv(substring(('".$this->db->escape($hash)."'),1,16),16,-10)
+            AND `hash_b`=conv(right(('".$this->db->escape($hash)."'),16),16,-10)
+            LIMIT 1", array($this,'create_tables'));
 
         return true;
     }
@@ -778,23 +779,20 @@ class Cache extends Controller implements Controller_Interface
         // delete file from database
         if ($deleteDB) {
 
-            // database reference
-            $db = & $this->db;
-
             // hash ID index based file path
             if (isset($store['hash_id']) && $store['hash_id']) {
-                $table = $this->table_index;
+                $table = $this->index_table($module, $store_key);
             } else {
                 $table = $this->table;
             }
 
             // update cache entry
-            $db->query("DELETE FROM `".$table."`
+            $this->db->query("DELETE FROM `".$table."`
                 WHERE `module`='".(int)$module_index."' 
                 AND `store`='".(int)$store['index']."' 
-                AND `hash_a`=conv(substring(('".$db->escape($hash)."'),1,16),16,-10)
-                AND `hash_b`=conv(right(('".$db->escape($hash)."'),16),16,-10)
-                LIMIT 1", 'cache');
+                AND `hash_a`=conv(substring(('".$this->db->escape($hash)."'),1,16),16,-10)
+                AND `hash_b`=conv(right(('".$this->db->escape($hash)."'),16),16,-10)
+                LIMIT 1", array($this,'create_tables'));
         }
 
         return true;
@@ -877,7 +875,7 @@ class Cache extends Controller implements Controller_Interface
         }
 
         // query id in cache table
-        $exists_id = $this->cachedb_get_hash_id($module, $store_key, $hash);
+        $exists_id = $this->query_hash_id($module, $store_key, $hash);
         if ($exists_id) {
             if (is_array($exists_id)) {
                 $exists_suffix = $exists_id[1];
@@ -911,9 +909,9 @@ class Cache extends Controller implements Controller_Interface
      * @param  string $module    Module key
      * @param  string $store_key Cache store key.
      * @param  string $hash      MD5 hash key.
-     * @return bool   Status true or false.
+     * @return mixed  Hash id and optional suffix
      */
-    final public function cachedb_get_hash_id($module, $store_key, $hash)
+    final public function query_hash_id($module, $store_key, $hash)
     {
         // verify store
         $store = $this->store($module, $store_key);
@@ -923,15 +921,12 @@ class Cache extends Controller implements Controller_Interface
             throw new Exception('Cache store does not support hash index ID.', 'config');
         }
 
-        // database reference
-        $db = & $this->db;
-
         // verify if hash file exists
-        $cache_entry = $db->fetch("SELECT `id`,`suffix` FROM `".$this->table_index."` WHERE 
+        $cache_entry = $this->db->fetch("SELECT `id`,`suffix` FROM `".$this->index_table($module, $store_key)."` WHERE 
             `module`='".(int)$module_index."' 
             AND `store`='".(int)$store['index']."' 
-            AND `hash_a`=conv(substring(('".$db->escape($hash)."'),1,16),16,-10)
-            AND `hash_b`=conv(right(('".$db->escape($hash)."'),16),16,-10)
+            AND `hash_a`=conv(substring(('".$this->db->escape($hash)."'),1,16),16,-10)
+            AND `hash_b`=conv(right(('".$this->db->escape($hash)."'),16),16,-10)
             LIMIT 1");
 
         // fetch result
@@ -954,7 +949,7 @@ class Cache extends Controller implements Controller_Interface
      * @param  string $hash      MD5 hash key.
      * @return int    Hash id
      */
-    final public function cachedb_create_hash_id($module, $store_key, $hash, $suffix = '')
+    final public function create_hash_id($module, $store_key, $hash, $suffix = '')
     {
         // verify store
         $store = $this->store($module, $store_key);
@@ -964,23 +959,17 @@ class Cache extends Controller implements Controller_Interface
             throw new Exception('Cache store does not support hash index ID.', 'config');
         }
 
-        // database reference
-        $db = & $this->db;
-
         // create index row
-        $db->query("REPLACE INTO `".$this->table_index."` (`module`,`store`,`hash`,`hash_a`,`hash_b`,`suffix`) 
+        $index_id = $this->db->insert("REPLACE INTO `".$this->index_table($module, $store_key)."` (`module`,`store`,`hash`,`hash_a`,`hash_b`,`suffix`) 
                     VALUES (
-                        '".(int)$module_index."', ".(int)$store['index'].",UNHEX('".$db->escape($hash)."'),
-                        conv(substring(('".$db->escape($hash)."'),1,16),16,-10),
-                        conv(right(('".$db->escape($hash)."'),16),16,-10),
-                        '".$db->escape($suffix)."'
-                    )", 'cache');
-
-        // index ID
-        $index_id = $db->insert_id();
+                        '".(int)$module_index."', ".(int)$store['index'].",UNHEX('".$this->db->escape($hash)."'),
+                        conv(substring(('".$this->db->escape($hash)."'),1,16),16,-10),
+                        conv(right(('".$this->db->escape($hash)."'),16),16,-10),
+                        '".$this->db->escape($suffix)."'
+                    )", array($this,'create_tables'));
 
         if (!$index_id) {
-            throw new Exception('Failed create index ID. ' . $db->last_error(), 'config');
+            throw new Exception('Failed create index ID. ' . $this->db->last_error(), 'config');
         }
         
         return $index_id;
@@ -997,7 +986,7 @@ class Cache extends Controller implements Controller_Interface
     {
         // verify if store key is valid
         if (!isset($this->stores[$module]) || !isset($this->stores[$module][$store_key])) {
-            throw new Exception('Invalid store key: '.$module.': ' . $store_key, 'cache');
+            throw new Exception('Invalid store key: '.$module.':' . $store_key, 'cache');
         }
 
         return $this->stores[$module][$store_key];
@@ -1137,59 +1126,108 @@ class Cache extends Controller implements Controller_Interface
     /**
      * Get cache stats
      *
-     * @param  string $module    Module key
-     * @param  string $store_key Cache store key.
+     * @param  string $module Module key
      * @return array  Stats
      */
-    final public function stats($module = false, $store_key = false)
+    final public function stats($module = false)
     {
-        if (($module && !isset($this->stores[$module])) || ($module && $store_key && !isset($this->stores[$module][$store_key]))) {
+        if ($module && !isset($this->stores[$module])) {
             throw new Exception('Invalid cache store.', 'cache');
         }
 
+        // try options cache (5 minute age)
+        if (empty($this->stats_cache)) {
+            $stats_cache = get_option('o10n_cache_stats', false);
+            if ($stats_cache && isset($stats_cache['t'])) {
+                $this->stats_cache = $stats_cache;
+
+                // update in the background once per minute
+                if ($stats_cache['t'] < (time() - 60)) {
+                    $this->shutdown->add(array($this,'update_stats'));
+                }
+            }
+        }
+
+        // return cached result
+        if (empty($this->stats_cache)) {
+
+            // update stats
+            $this->update_stats();
+        }
+
+        if ($module) {
+            return (isset($this->stats_cache[$module])) ? $this->stats_cache[$module] : array('count' => 0,'size' => 0);
+        }
+
+        return $this->stats_cache;
+    }
+
+    /**
+     * Update cache stats
+     *
+     * @return array Stats
+     */
+    final public function update_stats()
+    {
         $tables = array();
 
-        $cache_query = array();
-        if (!$module) {
-            // total cache stats
+        // total cache stats
+        $tables[] = $this->table;
 
-            $tables[] = $this->table;
-            $tables[] = $this->table_index;
-        } else {
-            $module_index = $this->module_index[$module];
-            $cache_query[] = "`module`='".(int)$module_index."'";
-
-            if ($store_key) {
-                $store = $this->store($module, $store_key);
-
-                if (isset($store['hash_id']) && $store['hash_id']) {
-                    $tables[] = $this->table_index;
-                } else {
-                    $tables[] = $this->table;
+        // add hash index tables for all modules
+        $modules = array_keys($this->module_index);
+        foreach ($modules as $modulekey) {
+            if (isset($this->stores[$modulekey])) {
+                foreach ($this->stores[$modulekey] as $store_key => $store) {
+                    if (isset($store['hash_id']) && $store['hash_id']) {
+                        $tables[] = $this->index_table($modulekey, $store_key);
+                    }
                 }
-                $cache_query[] = "`store`='".(int)$store['index']."'";
-            } else {
-                $tables[] = $this->table;
-                $tables[] = $this->table_index;
             }
         }
 
-        $count = 0;
-        $size = 0;
+
+        // stats
+        $stats = array(
+            'total' => array(
+                'count' => 0,
+                'size' => 0
+            )
+        );
+
+        $module_key_index = array_flip($this->module_index);
 
         foreach ($tables as $table) {
+            
             // query database
-            $result = $this->db->fetch("SELECT count(*) as `count`,SUM(`size`) as `size` FROM ".$table."".((!empty($cache_query)) ? " WHERE " . implode(' AND ', $cache_query) : "")."");
-            if ($result) {
-                $count += $result['count'];
-                $size += $result['size'];
+            $this->db->query("SELECT count(*) as `count`,SUM(`size`) as `size`,`module` FROM ".$table." GROUP BY `module`", array($this,'create_tables'));
+            
+            while ($result = $this->db->fetch()) {
+                $module_key = (isset($module_key_index[$result['module']])) ? $module_key_index[$result['module']] : false;
+
+                if ($module_key) {
+                    if (!isset($stats[$module_key])) {
+                        $stats[$module_key] = array(
+                            'count' => 0,
+                            'size' => 0
+                        );
+                    }
+                    $stats[$module_key]['count'] += $result['count'];
+                    $stats[$module_key]['size'] += $result['size'];
+                }
+
+                $stats['total']['count'] += $result['count'];
+                $stats['total']['size'] += $result['size'];
             }
+            $this->db->free_result();
         }
 
-        return array(
-            'count' => $count,
-            'size' => $size
-        );
+        // save cache
+        $stats['t'] = time();
+        update_option('o10n_cache_stats', $stats, false);
+        $this->stats_cache = $stats;
+
+        return $stats;
     }
 
     /**
@@ -1216,33 +1254,94 @@ class Cache extends Controller implements Controller_Interface
     }
 
     /**
-     * Clear cache
+     * Initiate cache flush
+     */
+    final public function init_flush()
+    {
+        // verify request
+        if (!isset($_GET['flush']) || !wp_verify_nonce($_GET['flush'], 'flush')) {
+            return;
+        }
+
+        $module = (isset($_GET['module'])) ? $_GET['module'] : false;
+        $stores = ($module && isset($_GET['stores'])) ? $_GET['stores'] : false;
+        if ($stores) {
+            $stores = explode(',', $stores);
+        }
+
+        if ($module === 'reset') {
+            $this->update_stats();
+        } else {
+
+            // exec flush
+            try {
+                if ($stores) {
+                    foreach ($stores as $store) {
+                        $this->flush($module, $store);
+                    }
+                } else {
+                    $this->flush($module);
+                }
+            } catch (Exception $err) {
+                wp_die($err->getMessage());
+            }
+
+            // add notice
+            if ($module) {
+                if ($stores) {
+                    $message = 'The optimization cache for module <strong>'.$module.'</strong> stores <strong>'.implode(', ', $stores).'</strong> has been cleared.';
+                } else {
+                    $message = 'The optimization cache for module <strong>'.$module.'</strong> has been cleared.';
+                }
+            } else {
+                $message = 'The optimization cache has been cleared.';
+            }
+            $this->admin->add_notice($message, 'cache', 'SUCCESS');
+        }
+
+        $return_url = (isset($_GET['return'])) ? $_GET['return'] : false;
+        if ($return_url) {
+            if (wp_redirect($return_url)) {
+                exit;
+            }
+        }
+    }
+
+    /**
+     * Flush
      *
      * @param string $module    Module key
      * @param string $store_key Cache store key.
      */
-    final public function clear($module = false, $store_key = false)
+    final public function flush($module = false, $store_key = false)
     {
         if (($module && !isset($this->stores[$module])) || ($module && $store_key && !isset($this->stores[$module][$store_key]))) {
             throw new Exception('Invalid cache store.', 'cache');
         }
-
-        // database reference
-        $db = & $this->db;
 
         $tables = array();
 
         // clear complete cache directory
         if (!$module) {
             $tables[] = $this->table;
-            $tables[] = $this->table_index;
+
+            $modules = array_keys($this->module_index);
+            foreach ($modules as $modulekey) {
+                if (isset($this->stores[$modulekey])) {
+                    foreach ($this->stores[$modulekey] as $store_key => $store) {
+                        if (isset($store['hash_id']) && $store['hash_id']) {
+                            $tables[] = $this->index_table($modulekey, $store_key);
+                        }
+                    }
+                }
+            }
 
             // delete cache directory contents
             $this->file->rmdir(O10N_CACHE_DIR, true);
 
             // empty database
             foreach ($tables as $table) {
-                $db->query("TRUNCATE `" . $table . "`", 'cache');
+                $this->db->query("TRUNCATE `" . $table . "`", array($this,'create_tables'));
             }
         } else {
             $module_index = $this->module_index[$module];
@@ -1262,31 +1361,69 @@ class Cache extends Controller implements Controller_Interface
 
                 // hash ID index table
                 if (isset($store['hash_id']) && $store['hash_id']) {
-                    $table = $this->table_index;
+                    $table = $this->index_table($module, $store_key);
+
+                    $this->db->query("TRUNCATE `" . $table . "`", array($this,'create_tables'));
                 } else {
                     $table = $this->table;
-                }
 
-                // delete cache entries
-                $db->query("DELETE FROM `".$table."` WHERE `module`='".(int)$module_index."' AND `store`='".(int)$store['index']."'", 'cache');
+                    // delete cache entries
+                    $this->db->query("DELETE FROM `".$table."` WHERE `module`='".(int)$module_index."' AND `store`='".(int)$store['index']."'", array($this,'create_tables'));
+                }
             }
         }
+
+        // delete option
+        delete_option('o10n_cache_stats');
     }
 
     /**
-     * Prune expired cache objects
+     * Return cache flush URL
+     *
+     * @param  string $module    Module key
+     * @param  string $store_key Cache store key.
+     * @return array  Stats
+     */
+    final public function flush_url($module = false, $store_key = false)
+    {
+        if ($module && $module !== 'reset' && !isset($this->stores[$module])) {
+            throw new Exception('Invalid cache store.', 'cache');
+        }
+
+        $return_url = ($this->env->is_ssl() ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+        $params = array(
+            'page' => 'o10n'
+        );
+
+        if ($module) {
+            $params['module'] = $module;
+
+            if ($store_key) {
+                if (is_array($store_key)) {
+                    $store_key = implode(',', $store_key);
+                }
+
+                $params['stores'] = $store_key;
+            }
+        }
+
+        $params['return'] = $return_url;
+
+        return wp_nonce_url(add_query_arg($params, admin_url('admin.php')), 'flush', 'flush');
+    }
+
+    /**
+     * Prune expired cache
      *
      * @param string $module    Module key
      * @param string $store_key Cache store key.
      */
-    final public function prune_expired($module = false, $store_key = false)
+    final public function prune($module = false, $store_key = false)
     {
         if (($module && !isset($this->stores[$module])) || ($module && $store_key && !isset($this->stores[$module][$store_key]))) {
             throw new Exception('Invalid cache store.', 'cache');
         }
-
-        // database reference
-        $db = & $this->db;
 
         // start time
         $time = time();
@@ -1298,65 +1435,69 @@ class Cache extends Controller implements Controller_Interface
             $modules = array($module);
         }
 
-        foreach ($modules as $module) {
-            $module_index = $this->module_index[$module];
-            if (!$store_key) {
-                $stores = array_keys($this->stores[$module]);
-            } else {
-                $stores = array($store_key);
-            }
-
-            foreach ($stores as $store_key) {
-                $store = $this->store($module, $store_key);
-
-                // cache entries do not expire
-                if (!isset($store['expire']) || !$store['expire']) {
-                    continue;
-                }
-
-                // hash ID index table
-                if (isset($store['hash_id']) && $store['hash_id']) {
-                    $table = $this->table_index;
+        try {
+            foreach ($modules as $module) {
+                $module_index = $this->module_index[$module];
+                if (!$store_key) {
+                    $stores = array_keys($this->stores[$module]);
                 } else {
-                    $table = $this->table;
+                    $stores = array($store_key);
                 }
 
-                // query cache entries
-                $res = $db->query("SELECT HEX(`hash`) as `hash` FROM `".$table."` WHERE `module`='".(int)$module_index."' AND `store`='".(int)$store['index']."' AND DATE_ADD(`date`, INTERVAL ".$store['expire']." SECOND) < FROM_UNIXTIME(NOW())", 'cache');
-                die('xxx');
-                if ($db->num_rows()) {
-                    $delete = array();
-                    $delete_batch_size = apply_filters('o10n_cache_prune_batch_size', 100);
-                    if (!is_numeric($delete_batch_size) || $delete_batch_size < 1) {
-                        $delete_batch_size = 100;
+                foreach ($stores as $module_store_key) {
+                    $store = $this->store($module, $module_store_key);
+
+                    // cache entries do not expire
+                    if (!isset($store['expire']) || !$store['expire']) {
+                        continue;
                     }
-                    $delete_batch_index = 0;
 
-                    while ($row = $db->fetch()) {
-                        if (!isset($delete[$delete_batch_index])) {
-                            $delete[$delete_batch_index] = array();
+                    $store['expire'] = 0;
+
+                    // hash ID index table
+                    if (isset($store['hash_id']) && $store['hash_id']) {
+                        $table = $this->index_table($module, $module_store_key);
+                    } else {
+                        $table = $this->table;
+                    }
+
+                    // query cache entries
+                    $this->db->query("SELECT HEX(`hash`) as `hash` FROM `".$table."` WHERE `module`='".(int)$module_index."' AND `store`='".(int)$store['index']."' AND DATE_ADD(`date`, INTERVAL ".$store['expire']." SECOND) < NOW()", array($this,'create_tables'));
+                    if ($this->db->num_rows()) {
+                        $delete = array();
+                        $delete_batch_size = apply_filters('o10n_cache_prune_batch_size', 100);
+                        if (!is_numeric($delete_batch_size) || $delete_batch_size < 1) {
+                            $delete_batch_size = 100;
                         }
+                        $delete_batch_index = 0;
+                        while ($row = $this->db->fetch()) {
+                            if (!isset($delete[$delete_batch_index])) {
+                                $delete[$delete_batch_index] = array();
+                            }
 
-                        // delete files
-                        $this->delete($module, $store_key, $row['hash'], (($delete_batch_size === 1) ? true : false));
+                            // delete files
+                            $this->delete($module, $module_store_key, $row['hash'], (($delete_batch_size === 1) ? true : false));
 
-                        if ($delete_batch_size > 1) {
-                            $delete[$delete_batch_index][] = $row['hash'];
-                            if (count($delete[$delete_batch_index]) >= $delete_batch_size) {
-                                $delete_batch_index++;
+                            if ($delete_batch_size > 1) {
+                                $delete[$delete_batch_index][] = $row['hash'];
+                                if (count($delete[$delete_batch_index]) >= $delete_batch_size) {
+                                    $delete_batch_index++;
+                                }
+                            }
+                        }
+                        $this->db->free_result();
+
+                        // delete from database
+                        if (!empty($delete)) {
+                            foreach ($delete as $batch) {
+                                $this->db->query("DELETE FROM `".$table."` WHERE `module`='".(int)$module_index."' AND `store`='".(int)$store['index']."' AND `hash` IN (UNHEX('".implode("'),UNHEX('", $batch)."')) LIMIT ".count($batch)."", array($this,'create_tables'));
                             }
                         }
                     }
-                    $db->free_result();
-
-                    // delete from database
-                    if (!empty($delete)) {
-                        foreach ($delete as $batch) {
-                            $db->query("DELETE FROM `".$table."` WHERE `module`='".(int)$module_index."' AND `store`='".(int)$store['index']."' AND `hash` IN (UNHEX('".implode("'),UNHEX('", $batch)."')) LIMIT ".count($batch)."", 'cache');
-                        }
-                    }
                 }
             }
+        } catch (Exception $err) {
+            wp_die($err->getMessage());
         }
     }
 
@@ -1375,60 +1516,84 @@ class Cache extends Controller implements Controller_Interface
     }
 
     /**
+     * Return index table name
+     */
+    final private function index_table($module, $store_key)
+    {
+        $index_table = $module . '_' . $store_key;
+
+        // verify module name
+        if (!preg_match('|^[a-z0-9_]+$|i', $index_table)) {
+            throw new Exception('Invalid module name for cache index table.', 'cache');
+        }
+
+        return $this->table . '_' . $index_table;
+    }
+
+    /**
      * Create cache tables
      */
     final public function create_tables()
     {
         try {
 
-
-        // verify if cache table exists
+            // verify if cache table exists
             $table_exists = ($this->wpdb->get_var($this->wpdb->prepare("SHOW TABLES LIKE '%s'", $this->table)) === $this->table);
             if (!$table_exists) {
 
-            // create hash table
+                // create hash table
                 $sql = "CREATE TABLE `".$this->table."` (
-              `module`  INTEGER NOT NULL,
-              `store`   INTEGER NOT NULL,
-              `hash`    BINARY(16) NOT NULL,
-              `hash_a`  BIGINT(20) NOT NULL,
-              `hash_b`  BIGINT(20) NOT NULL,
-              `date`    INTEGER,
-              `size`    INTEGER,
-              PRIMARY KEY (`module`,`store`,`hash`),
-              UNIQUE KEY (`module`,`store`,`hash_a`,`hash_b`),
-              INDEX (`module`),
-              INDEX (`store`),
-              INDEX (`date`)
-            )";
+                    `module` int(10) UNSIGNED NOT NULL,
+                    `store` int(10) UNSIGNED NOT NULL,
+                    `hash` binary(16) NOT NULL,
+                    `hash_a` bigint(20) NOT NULL,
+                    `hash_b` bigint(20) NOT NULL,
+                    `date` datetime DEFAULT NULL,
+                    `size` int(10) UNSIGNED DEFAULT NULL,
+                    PRIMARY KEY (`module`,`store`,`hash`),
+                    UNIQUE KEY (`module`,`store`,`hash_a`,`hash_b`),
+                    INDEX (`module`),
+                    INDEX (`store`),
+                    INDEX (`date`)
+                ) ENGINE=InnoDB;";
 
                 $this->db->query($sql);
             }
 
-            // verify if cache index table exists
-            $table_exists = ($this->wpdb->get_var($this->wpdb->prepare("SHOW TABLES LIKE '%s'", $this->table_index)) === $this->table_index);
-            if (!$table_exists) {
+            // create hash ID index tables
+            foreach ($this->stores as $module => $module_stores) {
+                foreach ($module_stores as $store_key => $store) {
+                    if (isset($store['hash_id']) && $store['hash_id']) {
+                        $index_table = $this->table . '_' . $module . '_' . $store_key;
 
-            // create hash ID index table
-                $sql = "CREATE TABLE `".$this->table_index."` (
-                  `id`      INTEGER NOT NULL AUTO_INCREMENT,
-                  `module`  INTEGER NOT NULL,
-                  `store`   INTEGER NOT NULL,
-                  `hash`    BINARY(16) NOT NULL,
-                  `hash_a`  BIGINT(20) NOT NULL,
-                  `hash_b`  BIGINT(20) NOT NULL,
-                  `date`    INTEGER,
-                  `size`    INTEGER,
-                  `suffix`    VARCHAR(100) NOT NULL,
-                  PRIMARY KEY (`id`),
-                  UNIQUE KEY (`module`,`store`,`hash`),
-                UNIQUE KEY (`module`,`store`,`hash_a`,`hash_b`),
-                INDEX (`module`),
-                INDEX (`store`),
-                INDEX (`date`)
-                )";
+                        // verify if cache index table exists
+                        $index_table = $this->index_table($module, $store_key);
+                        $table_exists = ($this->wpdb->get_var($this->wpdb->prepare("SHOW TABLES LIKE '%s'", $index_table)) === $index_table);
+                        if (!$table_exists) {
 
-                $this->db->query($sql);
+                            // create hash ID index table
+                            $sql = "CREATE TABLE `".$index_table."` (
+                                `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+                                `module` int(10) UNSIGNED NOT NULL,
+                                `store` int(10) UNSIGNED NOT NULL,
+                                `hash` binary(16) NOT NULL,
+                                `hash_a` bigint(20) NOT NULL,
+                                `hash_b` bigint(20) NOT NULL,
+                                `date` datetime DEFAULT NULL,
+                                `size` int(10) UNSIGNED DEFAULT NULL,
+                                `suffix`    VARCHAR(100) NOT NULL,
+                                PRIMARY KEY (`id`),
+                                UNIQUE KEY (`module`,`store`,`hash`),
+                                UNIQUE KEY (`module`,`store`,`hash_a`,`hash_b`),
+                                INDEX (`module`),
+                                INDEX (`store`),
+                                INDEX (`date`)
+                            ) ENGINE=InnoDB;";
+
+                            $this->db->query($sql);
+                        }
+                    }
+                }
             }
         } catch (Exception $err) {
             wp_die($err->getMessage());

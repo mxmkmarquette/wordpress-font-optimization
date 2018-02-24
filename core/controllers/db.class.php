@@ -55,10 +55,10 @@ class Db extends Controller implements Controller_Interface
      * @param  string   $query MySQL query.
      * @return resource MySQL query resource.
      */
-    final public function query($query, $onTableError = false)
+    final public function query($query, $onTableExistsError = false)
     {
         if ($this->mysqli) {
-            \mysqli_query($this->wpdb->dbh, $query);
+            $this->last_result = \mysqli_query($this->wpdb->dbh, $query);
         } else {
             $this->last_result = \mysql_query($query, $this->wpdb->dbh);
         }
@@ -67,18 +67,11 @@ class Db extends Controller implements Controller_Interface
         if (($last_error = $this->last_error()) && $last_error) {
 
             // table does not exist
-            if ($onTableError && $last_error[0] === 1146) {
-                if (is_string($onTableError)) {
-                    switch ($onTableError) {
-
-                        // create cache tables
-                        case "cache":
-                            Core::get('cache')->create_tables();
-                        break;
-                    }
-                } else {
-                    call_user_func($onTableError);
+            if ($last_error[0] === 1146 && $onTableExistsError) {
+                if (!is_callable($onTableExistsError)) {
+                    throw new Exception('Table does not exist callback not callable.', 'db');
                 }
+                call_user_func($onTableExistsError);
 
                 // try again
                 return $this->query($query);
@@ -88,6 +81,21 @@ class Db extends Controller implements Controller_Interface
         }
 
         return $this->last_result;
+    }
+
+    /**
+     * Insert row and return ID
+     *
+     * @param  string $query MySQL insert query
+     * @return int    Insert ID
+     */
+    final public function insert($query, $onTableExistsError = false)
+    {
+        // exec insert query
+        $this->query($query, $onTableExistsError);
+
+        // return index ID
+        return $this->insert_id();
     }
 
     /**
@@ -101,9 +109,9 @@ class Db extends Controller implements Controller_Interface
         if (!$result) {
             $result = $this->last_result;
         }
-
+        
         if ($this->mysqli) {
-            return $result->num_rows;
+            return @\mysqli_num_rows($result);
         } else {
             return @\mysql_num_rows($result);
         }

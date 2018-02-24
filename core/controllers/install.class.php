@@ -61,20 +61,6 @@ class Install extends Controller implements Controller_Interface
 
         // create cache tables
         $this->create_cache_tables();
-
-        // setup crons
-        /*if (function_exists('wp_next_scheduled')) {
-
-            // cache cleanup cron
-            if (!wp_next_scheduled('o10n_cron_prune_cache')) {
-                wp_schedule_event(current_time('timestamp'), 'twicedaily', 'o10n_cron_prune_cache');
-            }
-
-            // cache expire cron
-            if (!wp_next_scheduled('o10n_cron_prune_expired_cache')) {
-                wp_schedule_event(current_time('timestamp'), '5min', 'o10n_cron_prune_expired_cache');
-            }
-        }*/
     }
 
     /**
@@ -84,8 +70,8 @@ class Install extends Controller implements Controller_Interface
     {
 
         // remove crons
-        //wp_clear_scheduled_hook('o10n_cron_prune_cache');
-        //wp_clear_scheduled_hook('o10n_cron_prune_expired_cache');
+        wp_clear_scheduled_hook('o10n_cron_prune_cache');
+        wp_clear_scheduled_hook('o10n_cron_prune_expired_cache');
     }
 
     /**
@@ -128,11 +114,6 @@ class Install extends Controller implements Controller_Interface
      */
     final public function cron_schedules($schedules)
     {
-        if (!isset($schedules["5min"])) {
-            $schedules["5min"] = array(
-                'interval' => 5 * 60,
-                'display' => __('Once every 5 minutes'));
-        }
         if (!isset($schedules["30min"])) {
             $schedules["30min"] = array(
                 'interval' => 30 * 60,

@@ -20,54 +20,12 @@ abstract class Controller
 
     protected $core; // core controller
 
-    // controller instances
-    protected $json;
-    protected $tools;
-    protected $i18n;
-    protected $error;
-    protected $install;
-    protected $client;
-    protected $options;
-    protected $env;
-    protected $cache;
-    protected $file;
-    protected $http;
-    protected $output;
-    protected $db;
-    protected $admin;
-    protected $pwa;
-    protected $csp;
-    protected $hash;
-    protected $shutdown;
-    protected $url;
-    protected $http2;
-    protected $proxy;
-    protected $html;
-    protected $css;
-    protected $js;
-
-    // admin controller instances
-    protected $AdminCP;
-    protected $AdminLinkFilter;
-    protected $AdminPluginIndex;
-    protected $AdminMenu;
-    protected $AdminClient;
-    protected $AdminOptions;
-    protected $AdminAjax;
-    protected $AdminView;
-    protected $AdminForm;
-    protected $AdminForminput;
-    protected $AdminHTML;
-    protected $AdminScreen;
-    protected $AdminHelp;
-    protected $AdminEditor;
+    // controller instances to allow in child
+    protected $bind;
 
     protected $wpdb; // WordPress database
 
     private $bind_after_setup; // controllers to bind after setup
-
-    // base controllers to bind
-    private $base_controllers = array();
 
     protected $first_priority; // first priority integer
     protected $content_path; // wp-content/ directory path
@@ -94,16 +52,15 @@ abstract class Controller
         $this->bind_after_setup = array();
 
         // bind child controllers
-        $bind = (!empty($bind)) ? array_unique(array_merge($this->base_controllers, $bind)) : $this->base_controllers;
-        foreach ($bind as $controller_name) {
-            $controller_classname = 'O10n\\' . ucfirst($controller_name);
-            if (isset(self::$instances[$controller_classname])) {
-                if (!property_exists($this, $controller_name)) {
-                    throw new Exception('Child controller not protected in Controller: ' . $controller_name, 'core');
+        if (is_array($bind)) {
+            $this->bind = $bind;
+            foreach ($bind as $controller_name) {
+                $controller_classname = 'O10n\\' . ucfirst($controller_name);
+                if (isset(self::$instances[$controller_classname])) {
+                    $this->$controller_name = & self::$instances[$controller_classname];
+                } else {
+                    $this->bind_after_setup[$controller_classname] = $controller_name;
                 }
-                $this->$controller_name = & self::$instances[$controller_classname];
-            } else {
-                $this->bind_after_setup[$controller_classname] = $controller_name;
             }
         }
 
@@ -210,6 +167,27 @@ abstract class Controller
     final public function allow_public()
     {
         return $this->allow_public;
+    }
+
+    /**
+     * Get controller
+     *
+     * @param string $controller_name Property name of controller.
+     */
+    public function &__get($controller_name)
+    {
+        if ($this->bind && in_array($controller_name, $this->bind)) {
+            $controller_classname = 'O10n\\' . ucfirst($controller_name);
+            if (isset(self::$instances[$controller_classname])) {
+                return self::$instances[$controller_classname];
+            }
+        }
+
+        if (!isset(self::$instances[0])) {
+            self::$instances[0] = false;
+        }
+
+        return self::$instances[0];
     }
 }
 

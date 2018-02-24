@@ -35,6 +35,7 @@ class Core
             'url',
             'options',
             'install',
+            'shutdown',
             'output',
             'admin'
         ),
@@ -55,7 +56,9 @@ class Core
         ),
 
         // global admin controllers (admin bar etc.)
-        'admin_global' => array()
+        'admin_global' => array(
+            'AdminGlobal'
+        )
     );
 
     /**
@@ -99,7 +102,8 @@ class Core
         // admin control panel controller
         if ($is_admin) {
             $controllers = array_merge($controllers, $this->controllers['admin']);
-        } elseif ($is_logged_in) { // loggedin user
+        }
+        if ($is_logged_in) { // loggedin user
             $controllers = array_merge($controllers, $this->controllers['admin_global']);
         }
 
@@ -296,10 +300,17 @@ class Core
     // return controller instance
     final public function _get($controller)
     {
+        // return loaded module keys
+        if ($controller === 'modules') {
+            $modules = $this->modules();
+
+            return ($modules) ? array_keys($modules) : false;
+        }
         if (isset($this->loaded_controllers[$controller])) {
             return $this->loaded_controllers[$controller];
         }
-        throw new Exception('Invalid controller ' . esc_html($controller), 'core');
+
+        return false;
     }
 
     // return controller instance

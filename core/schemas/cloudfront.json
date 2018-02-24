@@ -1,0 +1,15 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "cloudfront.json",
+    "title": "CloudFront Page Cache Configuration",
+    "description": "Schema for CloudFront Page Cache Configuration JSON.",
+    "type": "object",
+    "properties": {
+        "enabled": {
+            "title": "Enable Content Security Policy",
+            "type": "boolean",
+            "default": false
+        },
+    },
+    "additionalProperties": false
+}

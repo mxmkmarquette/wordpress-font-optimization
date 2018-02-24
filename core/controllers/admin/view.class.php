@@ -163,16 +163,24 @@ class AdminView extends Controller implements Controller_Interface
 
             // load controller
             $controller = $this->view_controllers[$this->active_view];
-            $this->active_view_controller = $controller::load($this->core);
 
-            // setup controller
-            $this->active_view_controller->setup_view();
+            try {
+                $this->active_view_controller = $controller::load($this->core);
 
-            // client script config
-            add_action('admin_init', array( $this, 'client_config'), $this->first_priority);
+                // setup controller
+                $this->active_view_controller->setup_view();
+            } catch (Exception $err) {
+                wp_die($err->getMessage());
+            }
 
-            // client script config
-            add_action('send_headers', array( $this, 'nocache_headers'), PHP_INT_MAX);
+            if ($this->active_view) {
+
+                // client script config
+                add_action('admin_init', array( $this, 'client_config'), $this->first_priority);
+
+                // client script config
+                add_action('send_headers', array( $this, 'nocache_headers'), PHP_INT_MAX);
+            }
         }
     }
 
@@ -239,7 +247,7 @@ class AdminView extends Controller implements Controller_Interface
         }
         
         // no view controller
-        if (!$this->active_view) {
+        if (!$this->active_view || !$this->active_view_controller) {
             print __('<p class="warning_red">No view controller.</p>', 'o10n');
         } else {
 

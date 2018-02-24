@@ -249,7 +249,7 @@ final class Module implements Module_Interface
      */
     final public function admin_tabs()
     {
-        return Core::get('Admin' . ucfirst($this->module_key))->admin_nav_tabs();
+        return Core::get('Admin' . ucfirst(str_replace('-', '', $this->module_key)))->admin_nav_tabs();
     }
 
     /**
@@ -257,7 +257,7 @@ final class Module implements Module_Interface
      */
     final public function admin_base()
     {
-        return Core::get('Admin' . ucfirst($this->module_key))->admin_base();
+        return Core::get('Admin' . ucfirst(str_replace('-', '', $this->module_key)))->admin_base();
     }
 
     /**

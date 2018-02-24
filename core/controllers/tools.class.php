@@ -98,18 +98,16 @@ class Tools extends Controller implements Controller_Interface
                 // filter match
                 if ($regex_match) {
                     $match = true;
-                    if (!$config) {
-                        $config = $filter;
-                    }
+                    $config = $filter;
+                    break;
                 }
             } else {
 
                 // match URL
                 if (strpos($string, $filter['match']) !== false) {
                     $match = true;
-                    if (!$config) {
-                        $config = $filter;
-                    }
+                    $config = $filter;
+                    break;
                 }
             }
         }

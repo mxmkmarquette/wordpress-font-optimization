@@ -52,7 +52,7 @@ Documentation is available on [Github](https://github.com/o10n-x/wordpress-font-
 
 == Changelog ==
 
-= 0.0.6 =
+= 0.0.7 =
 
 Core update (see changelog.txt)
 

@@ -30,7 +30,7 @@ if (version_compare(PHP_VERSION, '5.4', '<')) {
 
     return;
 } else {
-    define('O10N_CORE_VERSION', '0.0.6');
+    define('O10N_CORE_VERSION', '0.0.7');
     define('O10N_CORE_URI', \plugin_dir_url(__FILE__));
     define('O10N_CORE_PATH', \plugin_dir_path(__FILE__));
 

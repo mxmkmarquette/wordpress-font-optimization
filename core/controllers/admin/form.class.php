@@ -32,7 +32,7 @@ class AdminForm extends Controller implements Controller_Interface
             'options',
             'AdminView',
             'AdminForminput',
-            'error'
+            'admin'
         ));
     }
 
@@ -621,7 +621,7 @@ class AdminForm extends Controller implements Controller_Interface
             }
 
             // add error notice
-            $this->error->add_notice($notice, 'settings');
+            $this->admin->add_notice($notice, 'settings');
             
             // return to form
             wp_redirect($redirect_url);
@@ -629,7 +629,7 @@ class AdminForm extends Controller implements Controller_Interface
         }
 
         // add error notice
-        $this->error->add_notice('Settings saved.', 'settings', 'SUCCESS');
+        $this->admin->add_notice('Settings saved.', 'settings', 'SUCCESS');
 
         // return to form
         wp_redirect($redirect_url);
