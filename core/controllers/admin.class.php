@@ -38,6 +38,7 @@ class Admin extends Controller implements Controller_Interface
 
         // WordPress setup
         add_action('wp', array($this,'wp_setup'), $this->first_priority);
+        add_action('admin_init', array($this,'wp_setup'), $this->first_priority);
     }
 
     /**

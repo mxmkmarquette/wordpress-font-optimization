@@ -70,6 +70,9 @@
         "timed-exec": {
             "$ref": "timed-exec.json#"
         },
+        "cloudfront": {
+            "$ref": "cloudfront.json#"
+        },
         "cdn": {
             "title": "Content Delivery Network",
             "type": "object",
