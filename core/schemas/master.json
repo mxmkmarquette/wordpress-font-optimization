@@ -73,6 +73,9 @@
         "cloudfront": {
             "$ref": "cloudfront.json#"
         },
+        "google-cdn": {
+            "$ref": "google-cdn.json#"
+        },
         "cdn": {
             "title": "Content Delivery Network",
             "type": "object",

@@ -25,8 +25,6 @@ abstract class Controller
 
     protected $wpdb; // WordPress database
 
-    private $bind_after_setup; // controllers to bind after setup
-
     protected $first_priority; // first priority integer
     protected $content_path; // wp-content/ directory path
 
@@ -52,22 +50,8 @@ abstract class Controller
         $this->bind_after_setup = array();
 
         // bind child controllers
-        if (is_array($bind)) {
+        if ($bind && is_array($bind)) {
             $this->bind = $bind;
-            foreach ($bind as $controller_name) {
-                $controller_classname = 'O10n\\' . ucfirst($controller_name);
-                if (isset(self::$instances[$controller_classname])) {
-                    $this->$controller_name = & self::$instances[$controller_classname];
-                } else {
-                    $this->bind_after_setup[$controller_classname] = $controller_name;
-                }
-            }
-        }
-
-        // bind controllers after setup
-        if (!empty($this->bind_after_setup)) {
-            add_action('o10n_controller_setup_completed', array($this,'after_controller_setup'), $this->first_priority, 1);
-            add_action('o10n_setup_completed', array($this,'after_optimization_setup'), $this->first_priority);
         }
     }
 
@@ -112,56 +96,6 @@ abstract class Controller
     }
 
     /**
-     * After optimization controller setup hook.
-     *
-     * @param string $controller_classname The class name of the controller to bind.
-     */
-    final public function after_controller_setup($controller_classname)
-    {
-
-        // bind child controller directly after instantiation and setup
-        if (!isset($this->bind_after_setup[$controller_classname])) {
-
-            // development class override
-            if (strpos($controller_classname, 'O10nDev\\') !== false) {
-                $controller_classname = str_replace('O10nDev\\', 'O10n\\', $controller_classname);
-            } else {
-                return;
-            }
-        }
-
-        if (isset($this->bind_after_setup[$controller_classname])) {
-            if (!isset(self::$instances[$controller_classname])) {
-                throw new Exception('Controller ' . $controller_classname . ' not instantiated.', 'core');
-            }
-            $controller_name = $this->bind_after_setup[$controller_classname];
-
-            // admin controller?
-            
-            $this->$controller_name = & self::$instances[$controller_classname];
-            unset($this->bind_after_setup[$controller_classname]);
-        }
-    }
-
-    /**
-     * After Core optimization controller setup hook.
-     */
-    final public function after_optimization_setup()
-    {
-
-        // bind child controllers and throw exception for unmet dependencies
-        if (!empty($this->bind_after_setup)) {
-            foreach ($this->bind_after_setup as $controller_classname => $controller_name) {
-                if (isset(self::$instances[$controller_classname])) {
-                    $this->$controller_name = & self::$instances[$controller_classname];
-                } else {
-                    throw new Exception('Failed to bind controller ' . $controller_name . '.', 'core');
-                }
-            }
-        }
-    }
-
-    /**
      * Return public access
      */
     final public function allow_public()
@@ -174,7 +108,7 @@ abstract class Controller
      *
      * @param string $controller_name Property name of controller.
      */
-    public function &__get($controller_name)
+    public function __get($controller_name)
     {
         if ($this->bind && in_array($controller_name, $this->bind)) {
             $controller_classname = 'O10n\\' . ucfirst($controller_name);

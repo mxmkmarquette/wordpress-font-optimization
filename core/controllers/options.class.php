@@ -201,7 +201,7 @@ class Options extends Controller implements Controller_Interface
     /**
      * Save settings to options
      */
-    public function save($settings, $replace = false)
+    final public function save($settings, $replace = false)
     {
         if (!is_array($settings)) {
             throw new Exception('Options to save not array.', 'settings');
