@@ -25,21 +25,3 @@ With debug modus enabled, the browser console will show detailed information abo
 The plugin contains a tool to download and install Google fonts locally for a theme, it provides an option to push fonts using HTTP/2 Server Push, it enables to remove linked fonts from HTML and CSS source code (`<link rel="stylesheet">` and `@import` links) and to remove Google Font Loader from HTML and javascript source code.
 
 Additional features can be requested on the [Github forum](https://github.com/o10n-x/wordpress-font-optimization/issues).
-
-## Changelog
-
-#### 0.0.3
-
-Core update (see changelog.txt)
-
-#### 0.0.2
-
-Added: unrender Font Face API fonts on Media Query change (timed render).
-
-#### 0.0.1
-
-Beta release. Please provide feedback on [Github forum](https://github.com/o10n-x/wordpress-font-optimization/issues).
-
-## Upgrade Notice
-
-None.
