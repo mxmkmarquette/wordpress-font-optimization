@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/o10n-x/wordpress-font-optimization.svg?branch=master)](https://travis-ci.org/o10n-x/wordpress-font-optimization)
+
 # Web Font Optimization
 
 Advanced Web Font optimization toolkit. Font Face API, Web Font Observer, Google Font Loader, Critical CSS, async and timed font rendering and more.
