@@ -18,6 +18,8 @@ class AdminForm extends Controller implements Controller_Interface
     private $user; // logged in user
     private $validator; // JSON validator
 
+    private $schema_option_cache = array();
+
     /**
      * Load controller
      *

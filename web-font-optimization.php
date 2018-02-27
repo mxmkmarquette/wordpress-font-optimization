@@ -30,7 +30,7 @@ if (defined('WP_INSTALLING') && WP_INSTALLING) {
 
 // settings
 $module_version = '0.0.8';
-$minimum_core_version = '0.0.9';
+$minimum_core_version = '0.0.10';
 $plugin_path = dirname(__FILE__);
 
 // load the optimization module loader
