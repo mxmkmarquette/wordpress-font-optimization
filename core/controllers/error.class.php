@@ -47,16 +47,11 @@ class Error extends Controller implements Controller_Interface
     final public function handle(Exception $error)
     {
         $category = $error->getCategory();
-        if (!isset($this->config[$category])) {
-            $this->config[$category] = array(
-                'admin_notice' => true
-            );
-        }
 
         // display admin notice?
         $admin_notice = $error->isAdminNotice();
         if ($admin_notice === -1) {
-            $admin_notice = $this->config[$category]['admin_notice'];
+            $admin_notice = true;
         }
 
         // admin notice

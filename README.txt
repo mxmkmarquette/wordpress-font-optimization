@@ -13,9 +13,9 @@ Advanced Web Font optimization toolkit. Font Face API, Web Font Observer, Google
 
 == Description ==
 
-This plugin is a toolkit for professional web font optimization. 
+Advanced Web Font optimization toolkit. Font Face API, Web Font Observer, Google Font Loader, Critical CSS, async and timed font rendering and more.
 
-The plugin provides an advanced management solution for the following font loading technologies:
+The plugin provides a management solution for the following font loading technologies:
 
 * [Font Face API](https://developer.mozilla.org/nl/docs/Web/API/FontFace)
 * [Font Face Observer](https://fontfaceobserver.com/)
@@ -52,7 +52,7 @@ Documentation is available on [Github](https://github.com/o10n-x/wordpress-font-
 
 == Changelog ==
 
-= 0.0.7 =
+= 0.0.8 =
 
 Core update (see changelog.txt)
 

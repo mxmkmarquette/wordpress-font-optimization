@@ -23,7 +23,37 @@ abstract class Controller
     // controller instances to allow in child
     protected $bind;
 
+    // controller instances
+    protected $error;
+    protected $env;
+    protected $i18n;
+    protected $json;
+    protected $file;
+    protected $db;
+    protected $cache;
+    protected $url;
+    protected $options;
+    protected $install;
+    protected $shutdown;
+    protected $output;
+    protected $admin;
+
+    // admin controller instances
+    protected $AdminCP;
+    protected $AdminScreen;
+    protected $AdminClient;
+    protected $AdminOptions;
+    protected $AdminForm;
+    protected $AdminForminput;
+    protected $AdminAjax;
+    protected $AdminView;
+    protected $AdminMenu;
+    protected $AdminLinkFilter;
+    protected $AdminHelp;
+
     protected $wpdb; // WordPress database
+
+    private $bind_after_setup = array(); // controllers to bind after setup
 
     protected $first_priority; // first priority integer
     protected $content_path; // wp-content/ directory path
@@ -46,12 +76,27 @@ abstract class Controller
         // wp-content/ path
         $this->content_path = trailingslashit(WP_CONTENT_DIR);
 
-        // bind non existent controllers after setup
-        $this->bind_after_setup = array();
-
         // bind child controllers
         if ($bind && is_array($bind)) {
             $this->bind = $bind;
+
+            // bind controllers
+            foreach ($bind as $controller_name) {
+                if (property_exists($this, $controller_name)) {
+                    $controller_classname = 'O10n\\' . ucfirst($controller_name);
+                    if (isset(self::$instances[$controller_classname])) {
+                        $this->$controller_name = self::$instances[$controller_classname];
+                    } else {
+                        $this->bind_after_setup[$controller_classname] = $controller_name;
+                    }
+                }
+            }
+        }
+
+        // bind controllers after setup
+        if (!empty($this->bind_after_setup)) {
+            add_action('o10n_controller_setup_completed', array($this,'after_controller_setup'), $this->first_priority, 1);
+            add_action('o10n_setup_completed', array($this,'after_optimization_setup'), $this->first_priority);
         }
     }
 
@@ -66,7 +111,7 @@ abstract class Controller
     {
         // verify calling controller
         $controller_classname = get_called_class();
-        if (substr($controller_classname, 0, 5) !== 'O10n\\' && substr($controller_classname, 0, 8) !== 'O10nDev\\') {
+        if (substr($controller_classname, 0, 5) !== 'O10n\\') {
             throw new Exception('Invalid caller.', 'core');
         }
 
@@ -96,6 +141,51 @@ abstract class Controller
     }
 
     /**
+     * After optimization controller setup hook.
+     *
+     * @param string $controller_classname The class name of the controller to bind.
+     */
+    final public function after_controller_setup($controller_classname)
+    {
+
+        // bind child controller directly after instantiation and setup
+        if (!isset($this->bind_after_setup[$controller_classname])) {
+            return;
+        }
+
+        if (isset($this->bind_after_setup[$controller_classname])) {
+            if (!isset(self::$instances[$controller_classname])) {
+                throw new Exception('Controller ' . $controller_classname . ' not instantiated.', 'core');
+            }
+            $controller_name = $this->bind_after_setup[$controller_classname];
+
+            $this->$controller_name = self::$instances[$controller_classname];
+            unset($this->bind_after_setup[$controller_classname]);
+        }
+    }
+
+    /**
+     * After Core optimization controller setup hook.
+     */
+    final public function after_optimization_setup()
+    {
+
+        // bind child controllers and throw exception for unmet dependencies
+        if (!empty($this->bind_after_setup)) {
+            foreach ($this->bind_after_setup as $controller_classname => $controller_name) {
+                if (!empty($this->$controller_name)) {
+                    continue;
+                }
+                if (isset(self::$instances[$controller_classname])) {
+                    $this->$controller_name = self::$instances[$controller_classname];
+                } else {
+                    throw new Exception('Failed to bind controller ' . $controller_name . '.', 'core');
+                }
+            }
+        }
+    }
+
+    /**
      * Return public access
      */
     final public function allow_public()
@@ -117,11 +207,7 @@ abstract class Controller
             }
         }
 
-        if (!isset(self::$instances[0])) {
-            self::$instances[0] = false;
-        }
-
-        return self::$instances[0];
+        return;
     }
 }
 
