@@ -223,7 +223,7 @@ class Client extends Controller implements Controller_Interface
     {
         // HTML to return for position
         $client_html = '';
-        
+
         // print at critical-css position
         if (isset($this->at['critical-css']) && !empty($this->at['critical-css'])) {
             $client_html .= implode('', $this->at['critical-css']);
@@ -237,7 +237,7 @@ class Client extends Controller implements Controller_Interface
         // construct client
         if (!empty($this->loaded_modules)) {
             ksort($this->loaded_modules);
-            
+ 
             // debug mode
             $js_ext = (defined('O10N_DEBUG') && O10N_DEBUG) ? '.debug.js' : '.js';
 

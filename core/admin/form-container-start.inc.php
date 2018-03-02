@@ -13,12 +13,12 @@ if (!defined('ABSPATH') || !defined('O10N_ADMIN')) {
 }
 
 ?>
-<form method="post" action="<?php echo wp_nonce_url(admin_url('admin-post.php?action=o10n_update'), 'save_settings', 'save'); ?>" class="clearfix json-form">
+<form method="post" action="<?php echo esc_url(admin_url('admin-post.php?action=o10n_update')); ?>" class="clearfix json-form">
 
     <div id="post-body" class="metabox-holder">
         <div id="post-body-content">
             <div class="postbox">
-                <?php wp_nonce_field('o10n'); ?>
+                <?php wp_nonce_field('save_settings'); ?>
                 <input type="hidden" id="ajax_nonce" value="<?php print esc_attr(wp_create_nonce('o10n')); ?>" />
                 <input type="hidden" name="view" value="<?php print esc_attr($view); ?>" />
                 <?php 

@@ -24,15 +24,16 @@ if (defined('O10N_CORE_VERSION')) {
     return;
 }
 
+define('O10N_CORE_VERSION', '0.0.12');
+define('O10N_CORE_URI', \plugin_dir_url(__FILE__));
+define('O10N_CORE_PATH', \plugin_dir_path(__FILE__));
+
 // require PHP 5.3+
 if (version_compare(PHP_VERSION, '5.4', '<')) {
     add_action('admin_notices', create_function('', "echo '<div class=\"error\"><p>".__('The Performance Optimization plugin requires PHP 5.4+ to function properly. Please upgrade PHP or deactivate the Performance Optimization plugin.', 'o10n') ."</p></div>';"));
 
     return;
 } else {
-    define('O10N_CORE_VERSION', '0.0.11');
-    define('O10N_CORE_URI', \plugin_dir_url(__FILE__));
-    define('O10N_CORE_PATH', \plugin_dir_path(__FILE__));
 
     # cache directory
     if (!defined('O10N_CACHE_DIR')) {
