@@ -72,13 +72,13 @@ class Admin extends Controller implements Controller_Interface
     /**
      * Add admin error notice
      */
-    final public function add_notice($message, $category, $type = 'ERROR')
+    final public function add_notice($message, $category = 'admin', $type = 'ERROR', $options = false)
     {
         // get notices
         $notices = $this->get_notices();
 
         // notice data
-        $notice = array();
+        $notice = (is_array($options)) ? $options : array();
         $notice['hash'] = md5($category . ':' . $message);
         $notice['text'] = $message;
         $notice['category'] = $category;

@@ -575,7 +575,7 @@ class AdminForm extends Controller implements Controller_Interface
     {
 
         // check security parameter
-        if (!check_admin_referer('save_settings') || !$this->user = wp_get_current_user()) {
+        if (!$this->admin->is_admin() || !check_admin_referer('save_settings') || !$this->user = wp_get_current_user()) {
             throw new Exception('Not authorized.', 'settings');
         }
 

@@ -237,7 +237,8 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
         $keys = (array) $keys;
 
         foreach ($keys as $key) {
-            if (!empty($this->get($key))) {
+            $value = $this->get($key);
+            if (!empty($value)) {
                 return false;
             }
         }

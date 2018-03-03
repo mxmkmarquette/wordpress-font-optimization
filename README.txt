@@ -5,15 +5,15 @@ Tags: font, webfont, font face api, optimization, google font loader, css, page 
 Requires at least: 4.0
 Requires PHP: 5.4
 Tested up to: 4.9.4
-Stable tag: 0.0.10
+Stable tag: 0.0.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Advanced Web Font optimization toolkit. Font Face API, Web Font Observer, Google Font Loader, Critical CSS, async and timed font rendering and more.
+Advanced Web Font optimization toolkit. Font Face API, Web Font Observer, Google Font Loader, Critical CSS, HTTP/2 Server Push, async and timed font rendering and more.
 
 == Description ==
 
-Advanced Web Font optimization toolkit. Font Face API, Web Font Observer, Google Font Loader, Critical CSS, async and timed font rendering and more.
+Advanced Web Font optimization toolkit. Font Face API, Web Font Observer, Google Font Loader, Critical CSS, HTTP/2 Server Push, async and timed font rendering and more.
 
 The plugin provides a management solution for the following font loading technologies:
 
@@ -52,7 +52,7 @@ Documentation is available on [Github](https://github.com/o10n-x/wordpress-font-
 
 == Changelog ==
 
-= 0.0.10 =
+= 0.0.11 =
 
 Core update (see changelog.txt)
 
