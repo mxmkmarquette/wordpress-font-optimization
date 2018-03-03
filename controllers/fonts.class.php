@@ -270,6 +270,12 @@ class Fonts extends Controller implements Controller_Interface
 
             $observer_config = $this->client->config_array_key_index($observer_config, array('fonts'), true);
 
+            // client config
+            $client_config = array();
+            if (!empty($observer_config)) {
+                $client_config[$this->client->config_index('fonts', 'config')] = $observer_config;
+            }
+
             $load_position = $this->options->get('fonts.fontfaceobserver.load_position');
             if ($load_position !== 'header') {
 
@@ -277,7 +283,7 @@ class Fonts extends Controller implements Controller_Interface
                 $this->client->load_module('timed-exec');
 
                 // set load position
-                $observer_config[$this->client->config_index('fonts', 'load_position')] = $this->client->config_index('key', 'timing');
+                $client_config[$this->client->config_index('fonts', 'load_position')] = $this->client->config_index('key', 'timing');
 
                 // timing type
                 $timing_type = $this->options->get('fonts.fontfaceobserver.load_timing.type');
@@ -299,12 +305,11 @@ class Fonts extends Controller implements Controller_Interface
                 if ($timing_config) {
 
                         // set load timing config
-                    $observer_config[$this->client->config_index('fonts', 'load_timing')] = $this->client->config_array_key_index($timing_config, array('key'), true);
+                    $client_config[$this->client->config_index('fonts', 'load_timing')] = $this->client->config_array_key_index($timing_config, array('key'), true);
                 }
             }
 
-            // set config
-            $this->client->set_config('fonts', 'observer', $observer_config);
+            $this->client->set_config('fonts', 'observer', $client_config);
         }
 
         // add font config loader module
@@ -368,7 +373,7 @@ class Fonts extends Controller implements Controller_Interface
         // add web font config
         $webfontconfig = $this->options->get('fonts.googlefontloader.config');
         if ($webfontconfig) {
-            $this->client->after('client', '<script data-o10n>o10n.fonts('.preg_replace(array('|\n+|s','|\s+|s'), array('',' '), $webfontconfig).');</script>');
+            $this->client->after('client', '<script data-o10n>o10n.fonts(' . rtrim(trim(preg_replace(array('|\n+|s','|\s+|s'), array('',' '), $webfontconfig)), ';') . ');</script>');
         }
 
 
