@@ -45,7 +45,9 @@ class AdminFonts extends ModuleAdminController implements Module_Admin_Controlle
     {
         // instantiate controller
         return parent::construct($Core, array(
-            'AdminView'
+            'AdminView',
+            'options',
+            'file'
         ));
     }
 
@@ -70,6 +72,17 @@ class AdminFonts extends ModuleAdminController implements Module_Admin_Controlle
         // register activate / deactivate hooks.
         register_activation_hook($this->core->modules('fonts')->basename(), array( $this, 'activate' ));
         register_deactivation_hook($this->core->modules('fonts')->basename(), array( $this, 'deactivate' ));
+
+        $critical_css_files = $this->options->get('css.critical.files');
+        if (is_array($critical_css_files) && isset($critical_css_files['webfonts.css'])) {
+            $themedir = $this->file->theme_directory(array('critical-css'));
+            if (file_exists($themedir . 'webfonts.css')) {
+                $this->tabs['critical-css'] = array(
+                    'title' => 'Critical CSS',
+                    'href' => add_query_arg(array('page' => 'o10n-css-editor','file' => 'critical-css/webfonts.css'), admin_url('admin.php'))
+                );
+            }
+        }
     }
     
     /**

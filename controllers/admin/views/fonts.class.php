@@ -42,6 +42,7 @@ class AdminViewFonts extends AdminViewBase
             'cache',
             'AdminAjax',
             'AdminClient',
+            'AdminOptions',
             'url'
         ));
     }
@@ -76,6 +77,11 @@ class AdminViewFonts extends AdminViewBase
 
         // enqueue scripts
         add_action('admin_enqueue_scripts', array( $this, 'enqueue_scripts' ), $this->first_priority);
+
+        // create critical CSS
+        if (isset($_GET['create-critical-css'])) {
+            add_action('admin_init', array( $this, 'create_critical_css' ), 10, 1);
+        }
     }
 
     /**
@@ -91,6 +97,40 @@ class AdminViewFonts extends AdminViewBase
         );
 
         return $data;
+    }
+
+    /**
+     * Create Critical CSS for web font CSS
+     */
+    final public function create_critical_css()
+    {
+        $themedir = $this->file->theme_directory(array('critical-css'));
+        $file = $themedir . 'webfonts.css';
+
+        // create critical css file
+        if (!file_exists($file)) {
+            $this->file->put_contents($file, ' ');
+        }
+
+        $critical_css_files = $this->options->get('css.critical.files');
+
+        // add new file
+        if (!isset($critical_css_files['webfonts.css'])) {
+            $critical_css_files['webfonts.css'] = array(
+                'file' => 'webfonts.css',
+                'filepath' => $file,
+                'priority' => 1,
+                'title' => 'Web Fonts'
+            );
+
+            try {
+                $this->AdminOptions->save(array('css.critical.files' => $critical_css_files));
+            } catch (Exception $err) {
+                wp_die($err->getMessage());
+            }
+        }
+
+        wp_redirect(add_query_arg(array('page' => 'o10n-css-editor','file' => 'critical-css/webfonts.css'), admin_url('admin.php')));
     }
 
     /**

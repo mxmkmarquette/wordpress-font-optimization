@@ -68,7 +68,11 @@ foreach ($tabs as $tabkey => $tabinfo) {
 
     $admin_base = (isset($tabinfo['admin_base'])) ? $tabinfo['admin_base'] : $admin_base;
 
-    $url = add_query_arg($params, admin_url($admin_base));
+    if (isset($tabinfo['href'])) {
+        $url = $tabinfo['href'];
+    } else {
+        $url = add_query_arg($params, admin_url($admin_base));
+    }
     if (isset($tabinfo['csstitle'])) {
         $title = '';
     } else {

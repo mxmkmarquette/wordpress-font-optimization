@@ -74,7 +74,7 @@ class Uninstall
         $modules = Core::get('modules');
 
         // plugin is last remaining optimization module, delete cache table
-        if (count($modules) === 0 || (count($modules) === 1 && $modules[0] === $this->modules)) {
+        if (count($modules) === 0 || (count($modules) === 1 && $modules[0] === $this->module)) {
             $cache_table = $wpdb->prefix . 'o10n__cache';
             $wpdb->query("DROP TABLE IF EXISTS {$cache_table}");
         }

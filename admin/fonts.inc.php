@@ -15,6 +15,14 @@ if (!defined('ABSPATH') || !defined('O10N_ADMIN')) {
 // print form header
 $this->form_start(__('Web Font Optimization', 'o10n'), 'fonts');
 
+$critical_css_files = $this->options->get('css.critical.files');
+if (is_array($critical_css_files) && isset($critical_css_files['webfonts.css'])) {
+    $themedir = $this->file->theme_directory(array('critical-css'));
+    $critical_css_exists = file_exists($themedir . 'webfonts.css');
+} else {
+    $critical_css_exists = false;
+}
+
 ?>
 
 <table class="form-table">
@@ -351,7 +359,7 @@ $this->form_start(__('Web Font Optimization', 'o10n'), 'fonts');
         </td>
     </tr>
     <tr valign="top">
-        <th scope="row">Web Font Critical CSS</th>
+        <th scope="row">Critical CSS</th>
         <td>
         <?php if (!$module_loaded('css')) {
     ?>
@@ -359,11 +367,18 @@ $this->form_start(__('Web Font Optimization', 'o10n'), 'fonts');
 <?php
 } else {
         ?>
-        	<input type="text" name="o10n[fonts.critical-css-file]" size="20" pattern="^[a-zA-Z0-9-_]+.css$" value="<?php $value('fonts.critical-css-file'); ?>" placeholder="webfonts.css">
-            <p class="description">Enter the file name used to store Web Font Critical CSS, e.g. webfonts.css. This setting is only used to provide a quick edit link from the font optimization admin panel.</p>
+        	<p class="description">To prevent a <a href="https://css-tricks.com/fout-foit-foft/" target="_blank">Flash of Unstyled Text</a> (FOUT, FOIT or FOFT) you can include the font CSS in the Critical CSS.</p>
 
-        	<p class="info_yellow suboption"><code><?php print get_template(); ?>/critical-css/webfonts.css</code> does not exist. <a href="#">Click here</a> to create it.</p>
 <?php
+        if ($critical_css_exists) {
+            ?>
+	<p class="suboption"><a href="<?php print esc_url(add_query_arg(array('page' => 'o10n-css-editor','file' => 'critical-css/webfonts.css'), admin_url('admin.php'))); ?>" class="button button-large">Edit <strong>critical-css/webfonts.css</strong></a></p>
+<?php
+        } else {
+            ?>
+        	<p class="info_yellow suboption"><code><?php print str_replace('/wp-content/themes/', '', $this->file->safe_path($themedir)); ?>webfonts.css</code> does not exist. <a href="<?php print esc_url(add_query_arg(array('page' => 'o10n-fonts','tab' => 'optimization', 'create-critical-css' => 1), admin_url('admin.php'))); ?>">Click here</a> to create it.</p>
+<?php
+        }
     }
 ?>
         </td>
