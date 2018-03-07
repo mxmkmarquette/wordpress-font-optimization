@@ -16,8 +16,8 @@ if (!defined('ABSPATH') || !defined('O10N_ADMIN')) {
 $this->form_start(__('Web Font Optimization', 'o10n'), 'fonts');
 
 $critical_css_files = $this->options->get('css.critical.files');
+$themedir = $this->file->theme_directory(array('critical-css'));
 if (is_array($critical_css_files) && isset($critical_css_files['webfonts.css'])) {
-    $themedir = $this->file->theme_directory(array('critical-css'));
     $critical_css_exists = file_exists($themedir . 'webfonts.css');
 } else {
     $critical_css_exists = false;
