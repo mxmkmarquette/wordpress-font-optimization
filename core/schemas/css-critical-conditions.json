@@ -30,8 +30,8 @@
                     "type": "string",
                     "pattern": "^([\\A-Za-z0-9_-]+::)?[A-Za-z0-9_-]+$"
                 },
-                "params": {
-                    "title": "Parameters to apply to the method.",
+                "arguments": {
+                    "title": "Arguments to apply to the method.",
                     "default": "null",
                     "oneOf": [{
                         "type": "null"

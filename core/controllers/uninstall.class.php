@@ -71,10 +71,10 @@ class Uninstall
         global $wpdb;
 
         // get loaded optimization modules
-        $modules = Core::get('modules');
+        $modules = (class_exists('\O10n\Core')) ? Core::get('modules') : false;
 
         // plugin is last remaining optimization module, delete cache table
-        if (count($modules) === 0 || (count($modules) === 1 && $modules[0] === $this->module)) {
+        if (!$modules || count($modules) === 0 || (count($modules) === 1 && $modules[0] === $this->module)) {
             $cache_table = $wpdb->prefix . 'o10n__cache';
             $wpdb->query("DROP TABLE IF EXISTS {$cache_table}");
         }

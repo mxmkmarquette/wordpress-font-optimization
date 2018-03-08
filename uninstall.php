@@ -16,7 +16,7 @@ $plugin_path = dirname(__FILE__);
 
 // load uninstall controller
 if (!class_exists('\O10n\Uninstall')) {
-    require $plugin_path . '/core/controllers/uninstall.php';
+    require $plugin_path . '/core/controllers/uninstall.class.php';
 }
 
 // start uninstaller
