@@ -34,7 +34,7 @@ if (is_array($critical_css_files) && isset($critical_css_files['webfonts.css']))
             <p class="description" style="margin-bottom:1em;">Optimize font loading using <code>Font Face API</code>.</p>
 
             <div class="suboption" data-ns="fonts.fontface"<?php $visible('fonts.fontface'); ?>>
-                <h5 class="h">&nbsp;Font Face API Config</h5>
+                <h5 class="h">&nbsp;Font Face API Config (<a href="https://github.com/o10n-x/wordpress-font-optimization/tree/master/docs#font-face-api-configuration" target="_blank">documentation</a>)</h5>
                 <div id="fonts-fontface-config"><div class="loading-json-editor"><?php print __('Loading JSON editor...', 'o10n'); ?></div></div>
                 <input type="hidden" class="json" name="o10n[fonts.fontface.config]" data-json-type="json-array" data-json-editor-height="auto" data-json-editor-init="1" value="<?php print esc_attr($json('fonts.fontface.config')); ?>" />
 			</div>
@@ -157,7 +157,7 @@ if (is_array($critical_css_files) && isset($critical_css_files['webfonts.css']))
 <?php
                 } ?>
             <p class="info_yellow" data-ns="fonts.http2_push"<?php $visible('fonts.http2_push'); ?>>You can enable or disable HTTP/2 Server Push for individual fonts in the Font Face API config. To push fonts manually, use the <a href="<?php print add_query_arg(array(
-                'page' => 'o10n-http2', 'tab' => 'optimization'
+                'page' => 'o10n-http2', 'tab' => 'push'
             ), admin_url('admin.php')); ?>">HTTP/2 Server Push configuration</a>.</p>
 <?php
     }
@@ -173,7 +173,7 @@ if (is_array($critical_css_files) && isset($critical_css_files['webfonts.css']))
             <p class="description" style="margin-bottom:1em;">Optimize font loading using <a href="https://fontfaceobserver.com/" target="_blank" rel="noopener">Font Face Ob­server</a>. Supports all fonts, including local hosted fonts, <a href="http://www.google.com/fonts" target="_blank" rel="noopener">Google Fonts</a>, <a href="http://typekit.com/" target="_blank" rel="noopener">Typekit</a>, <a href="https://fonts.com/" target="_blank" rel="noopener">Fonts.com</a>, and <a href="http://webtype.com/" target="_blank" rel="noopener">Webtype</a>.</p>
 
             <div class="suboption" data-ns="fonts.fontfaceobserver"<?php $visible('fonts.fontfaceobserver'); ?>>
-                <h5 class="h">&nbsp;Font Face Observer Config</h5>
+                <h5 class="h">&nbsp;Font Face Observer Config (<a href="https://github.com/o10n-x/wordpress-font-optimization/tree/master/docs#font-face-observer-configuration" target="_blank">documentation</a>)</h5>
                 <div id="fonts-fontfaceobserver-config"><div class="loading-json-editor"><?php print __('Loading JSON editor...', 'o10n'); ?></div></div>
                 <input type="hidden" class="json" name="o10n[fonts.fontfaceobserver.config]" data-json-type="json-array" data-json-editor-height="auto" data-json-editor-init="1" value="<?php print esc_attr($json('fonts.fontfaceobserver.config')); ?>" />
             </div>
@@ -231,7 +231,7 @@ if (is_array($critical_css_files) && isset($critical_css_files['webfonts.css']))
             <p class="description" style="margin-bottom:1em;">Enable the <a href="https://github.com/typekit/webfontloader" target="_blank" rel="noopener">Google Web Font Loader</a> javascript library.</p>
 
             <div class="suboption" data-ns="fonts.googlefontloader"<?php $visible('fonts.googlefontloader'); ?>>
-            <h5 class="h">&nbsp;WebFontConfig</h5>
+            <h5 class="h">&nbsp;WebFontConfig (<a href="https://github.com/o10n-x/wordpress-font-optimization/tree/master/docs#google-web-font-loader-configuration" target="_blank">documentation</a>)</h5>
             <textarea class="json-array-lines" id="fonts_webfontconfig_editor" name="o10n[fonts.googlefontloader.config]" placeholder="<?php print esc_attr('WebFontConfig = { 
     classes: false, 
     typekit: { id: \'xxxxxx\' }, 

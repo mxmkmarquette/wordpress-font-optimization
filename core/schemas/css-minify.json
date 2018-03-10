@@ -13,57 +13,66 @@
         "cssmin": {
             "$ref": "css-cssmin.json#"
         },
-        "inline_assets": {
-            "title": "Inline assets using CSS data-URI.",
-            "oneOf": [{
-                "type": "boolean"
-            }, {
-                "type": "object",
-                "properties": {
-                    "enabled": {
-                        "type": "boolean",
-                        "default": false
-                    },
-                    "config": {
-                        "type": "object",
-                        "properties": {
-                            "maxSize": {
-                                "title": "Specify the maximum file size to inline (in kbytes).",
-                                "oneOf": [{
-                                    "type": "boolean",
-                                    "enum": [
-                                        false
-                                    ]
-                                }, {
-                                    "type": "number",
-                                    "default": 14
-                                }],
-                                "default": false
-                            },
-                            "filter": {
-                                "title": "Array of regex'es to determine wheter a file should be inlined.",
-                                "oneOf": [{
-                                    "type": "boolean",
-                                    "enum": [
-                                        false
-                                    ]
-                                }, {
-                                    "title": "Enter a JSON array with regex paterns.",
-                                    "type": "array",
-                                    "items": {
-                                        "title": "A regex string.",
-                                        "type": "string"
-                                    },
-                                    "uniqueItems": true,
-                                    "default": []
-                                }],
-                                "default": false
-                            }
-                        }
-                    }
+        "rebase": {
+            "title": "Rebase relative URIs in CSS",
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "title": "Rebase relative URIs in CSS",
+                    "type": "boolean",
+                    "default": false
+                }
+            },
+            "additionalProperties": false
+        },
+        "import": {
+            "title": "Process @import links",
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "title": "Process @import",
+                    "type": "boolean",
+                    "default": false
                 },
-                "additionalProperties": false
-            }]
+                "filter": {
+                    "title": "@import Filter",
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "title": "Filter stylesheets to import",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "type": {
+                            "title": "Filter List Type",
+                            "type": "string",
+                            "enum": [
+                                "include",
+                                "exclude"
+                            ],
+                            "default": "include"
+                        },
+                        "include": {
+                            "type": "array",
+                            "items": {
+                                "title": "Stylesheets to include.",
+                                "type": "string"
+                            },
+                            "uniqueItems": true
+                        },
+                        "exclude": {
+                            "type": "array",
+                            "items": {
+                                "title": "Stylesheets to exclude.",
+                                "type": "string"
+                            },
+                            "uniqueItems": true
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
         },
         "filter": {
             "title": "CSS Minification Filter",
@@ -322,32 +331,57 @@
             },
             "additionalProperties": false
         },
-        "api": {
-            "title": "CSS optimization API configuration",
-            "type": "object",
-            "properties": {
-                "enabled": {
-                    "title": "CSS Optimization API",
-                    "type": "boolean",
-                    "default": false
+        "inline_assets": {
+            "title": "Inline assets using CSS data-URI.",
+            "oneOf": [{
+                "type": "boolean"
+            }, {
+                "type": "object",
+                "properties": {
+                    "enabled": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "config": {
+                        "type": "object",
+                        "properties": {
+                            "maxSize": {
+                                "title": "Specify the maximum file size to inline (in kbytes).",
+                                "oneOf": [{
+                                    "type": "boolean",
+                                    "enum": [
+                                        false
+                                    ]
+                                }, {
+                                    "type": "number",
+                                    "default": 14
+                                }],
+                                "default": false
+                            },
+                            "filter": {
+                                "title": "Array of regex'es to determine wheter a file should be inlined.",
+                                "oneOf": [{
+                                    "type": "boolean",
+                                    "enum": [
+                                        false
+                                    ]
+                                }, {
+                                    "title": "Enter a JSON array with regex paterns.",
+                                    "type": "array",
+                                    "items": {
+                                        "title": "A regex string.",
+                                        "type": "string"
+                                    },
+                                    "uniqueItems": true,
+                                    "default": []
+                                }],
+                                "default": false
+                            }
+                        }
+                    }
                 },
-                "endpoint": {
-                    "title": "API endpoint URL",
-                    "description": "The endpoint URL of the CSS optimization API.",
-                    "type": "string",
-                    "format": "uri"
-                },
-                "secret": {
-                    "title": "Authentication secret (JSON Web Token)",
-                    "type": "string"
-                },
-                "fallback": {
-                    "title": "Fallback to basic minifier",
-                    "type": "boolean",
-                    "default": true
-                }
-            },
-            "additionalProperties": false
+                "additionalProperties": false
+            }]
         }
     },
     "additionalProperties": false

@@ -150,7 +150,7 @@ class Core
         if (isset(self::$instance->loaded_modules[$module_key])) {
 
             // print fatal error to public
-            $this->loading_failed(false, __FILE__, __LINE__);
+            self::$instance->loading_failed(false, __FILE__, __LINE__);
         }
 
         // add module

@@ -30,6 +30,7 @@ class Url extends Controller implements Controller_Interface
         // instantiate controller
         return parent::construct($Core, array(
             'file',
+            'env',
             'options'
         ));
     }
@@ -300,5 +301,37 @@ class Url extends Controller implements Controller_Interface
         $host = isset($host) ? $host : $_SERVER['SERVER_NAME'];
 
         return $host;
+    }
+
+
+    /**
+     * Rebase relative URI
+     */
+    final public function rebase($url, $base_href)
+    {
+        // url decode
+        if (strpos($url, '%') !== false) {
+            $url = urldecode($url);
+        }
+        
+        // normalize
+        if (strpos($url, '//') === 0) {
+            if ($this->env->is_ssl()) {
+                $url = "https:" . $url;
+            } else {
+                $url = "http:" . $url;
+            }
+        }
+
+        // include Net_URL2
+        // @link http://pear.php.net/package/Net_URL2/
+        if (!class_exists('O10n\Net_URL2')) {
+            require_once O10N_CORE_PATH . 'lib/Net_URL2.php';
+        }
+
+        $base = new Net_URL2($base_href);
+        $abs = (string)$base->resolve($url);
+
+        return $abs;
     }
 }

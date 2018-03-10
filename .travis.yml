@@ -21,6 +21,13 @@ matrix:
   allow_failures:
     - php: nightly
 
+notifications:
+  slack:
+    rooms:
+      - o10n-x:J4WK8cWmvrEyQGtajZ0XcXC2#testing
+    on_success: always
+    on_failure: always
+
 before_script:
   # Install composer packages before trying to activate themes or plugins
   # - composer install
