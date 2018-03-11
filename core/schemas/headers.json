@@ -14,7 +14,10 @@
                         "title": "Enable Strict Transport Security header",
                         "type": "boolean",
                         "enum": [false]
-                    }
+                    },
+                    "includeSubdomains": {},
+                    "preload": {},
+                    "max-age": {}
                 },
                 "required": ["enabled"],
                 "additionalProperties": false
@@ -57,7 +60,12 @@
                         "title": "Enable HTTP Public Key Pinning (HPKP) header",
                         "type": "boolean",
                         "enum": [false]
-                    }
+                    },
+                    "pin-sha256": {},
+                    "pin-sha256-backup": {},
+                    "includeSubdomains": {},
+                    "max-age": {},
+                    "reportUri": {}
                 },
                 "required": ["enabled"],
                 "additionalProperties": false
@@ -338,7 +346,8 @@
                         "title": "Enable Access-Control-Max-Age header",
                         "type": "boolean",
                         "enum": [false]
-                    }
+                    },
+                    "max-age": {}
                 },
                 "additionalProperties": false
             }, {

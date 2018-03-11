@@ -195,6 +195,8 @@ class AdminForminput extends Controller implements Controller_Interface
                         try {
                             $this->verified_input[$path] = $this->json->parse($this->input[$path], true);
                         } catch (\Exception $e) {
+                            die(htmlentities($this->input[$path]));
+                            $this->error($path, $e->getMessage());
                             $this->verified_input[$path] = (($type === 'json') ? json_decode('{}') : array());
                         }
                     } else {

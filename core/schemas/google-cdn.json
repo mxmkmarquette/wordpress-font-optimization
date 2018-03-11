@@ -17,12 +17,6 @@
             "minLength": 1,
             "pattern": "^[^/]+$"
         },
-        "origin": {
-            "title": "Origin host",
-            "type": "string",
-            "minLength": 1,
-            "pattern": "^[^/]+$"
-        },
         "max_age": {
             "title": "Default expire age",
             "oneOf": [{

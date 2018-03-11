@@ -378,6 +378,8 @@ class Client extends Controller implements Controller_Interface
         // compress config parameter
         $config_param = preg_replace(array('|"__O10N_NULL__"|','|"__O10N_NULL:(\d+)__"|','|"__O10N_TRUE__"|','|"__O10N_FALSE__"|'), array('ø', 'ø:$1','µ','¬'), json_encode($config_param, true));
 
+        //$config_param = str_replace('\\', '\\\\', $config_param);
+
         return $config_param;
     }
 
