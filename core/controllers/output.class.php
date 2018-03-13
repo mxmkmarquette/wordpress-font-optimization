@@ -42,7 +42,7 @@ class Output extends Controller implements Controller_Interface
     protected function setup()
     {
         // disabled
-        if (!$this->env->is_optimization()) {
+        if (!$this->env->is_optimization() || is_admin()) {
             return;
         }
 

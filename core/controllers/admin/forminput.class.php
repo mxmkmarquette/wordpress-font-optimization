@@ -191,12 +191,11 @@ class AdminForminput extends Controller implements Controller_Interface
                 break;
                 case "json":
                 case "json-array":
-                    if (isset($this->input[$path])) {
+                    if (isset($this->input[$path]) && trim($this->input[$path]) !== '') {
                         try {
                             $this->verified_input[$path] = $this->json->parse($this->input[$path], true);
                         } catch (\Exception $e) {
-                            die(htmlentities($this->input[$path]));
-                            $this->error($path, $e->getMessage());
+                            $this->error($path, $e->getMessage() . ' <pre>'.htmlentities($this->input[$path], ENT_COMPAT, 'utf-8').'</pre>');
                             $this->verified_input[$path] = (($type === 'json') ? json_decode('{}') : array());
                         }
                     } else {

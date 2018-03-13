@@ -10,6 +10,25 @@
             "type": "boolean",
             "default": false
         },
+        "comments": {
+            "title": "Comment related optimization",
+            "type": "object",
+            "properties": {
+                "remove_important": {
+                    "title": "Remove important comments (/*!)",
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "title": "Remove important comments (/*!)",
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
+        },
         "filter": {
             "title": "Javascript Minification Filter",
             "type": "object",
@@ -219,33 +238,6 @@
                         "additionalProperties": false
                     }],
                     "default": false
-                }
-            },
-            "additionalProperties": false
-        },
-        "api": {
-            "title": "Javascript optimization API configuration",
-            "type": "object",
-            "properties": {
-                "enabled": {
-                    "title": "Javascript Optimization API",
-                    "type": "boolean",
-                    "default": false
-                },
-                "endpoint": {
-                    "title": "API endpoint URL",
-                    "description": "The endpoint URL of the Javascript optimization API.",
-                    "type": "string",
-                    "format": "uri"
-                },
-                "secret": {
-                    "title": "Authentication secret (JSON Web Token)",
-                    "type": "string"
-                },
-                "fallback": {
-                    "title": "Fallback to basic minifier",
-                    "type": "boolean",
-                    "default": true
                 }
             },
             "additionalProperties": false

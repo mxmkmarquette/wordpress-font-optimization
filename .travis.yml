@@ -22,6 +22,7 @@ matrix:
     - php: nightly
 
 notifications:
+  email: false
   slack:
     rooms:
       - o10n-x:J4WK8cWmvrEyQGtajZ0XcXC2#testing

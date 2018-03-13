@@ -108,6 +108,31 @@ class Options extends Controller implements Controller_Interface
     }
 
     /**
+     * Delete options dynamically without saving to database
+     *
+     * @param array $options Options to add
+     */
+    final public function delete($key)
+    {
+        // multi query
+        if (substr($key, -2) === '.*') {
+            $parent_key = substr($key, 0, -2);
+            $keys = preg_grep('/'.preg_quote($parent_key).'\..*/', array_keys($this->data));
+
+            $result = array();
+            foreach ($keys as $key) {
+                if (isset($this->data[$key])) {
+                    unset($this->data[$key]);
+                }
+            }
+        } else {
+            if (isset($this->data[$key])) {
+                unset($this->data[$key]);
+            }
+        }
+    }
+
+    /**
      * Get JSON option
      *
      * @param  string $key     Option key.

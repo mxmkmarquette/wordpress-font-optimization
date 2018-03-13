@@ -1,3 +1,3 @@
-function ec(a){return a.replace(/^g:/,"https://fonts.gstatic.com/")}var fc=z[5]?z[5][0]:0;
-fc&&"FontFace"in t&&dc(fc,function(a,c,b,d,e,g){function f(){h||(h=!0,l.fonts.add(q),g&&(g[7]&&g[7]in t&&t[g[7]].call(t,a),g[10]&&cc(g[10][11],g[10][12],g[10][13])))}function n(){h&&(h=!1,l.fonts["delete"](q))}if("string"===typeof a?a:a[26]){var h;"string"===typeof a[14]?b="url("+ec(a[14])+")":(b=[],a[14][16]&&b.push("url("+ec(a[14][16])+") format('woff2')"),a[14][15]&&b.push("url("+ec(a[14][15])+") format('woff')"),b=b.join(", "));var q=new FontFace(a[26],b,c);q.load().then(function(){e?O(e,f,n):
-f()})}});
+function fc(a){return a.replace(/^g:/,"https://fonts.gstatic.com/")}var gc=z[5]?z[5][0]:0;
+gc&&"FontFace"in t&&ec(gc,function(a,c,b,d,e,f){function g(){h||(h=!0,l.fonts.add(q),f&&(f[7]&&f[7]in t&&t[f[7]].call(t,a),f[10]&&dc(f[10][11],f[10][12],f[10][13])))}function n(){h&&(h=!1,l.fonts["delete"](q))}if("string"===typeof a?a:a[26]){var h;"string"===typeof a[14]?b="url("+fc(a[14])+")":(b=[],a[14][16]&&b.push("url("+fc(a[14][16])+") format('woff2')"),a[14][15]&&b.push("url("+fc(a[14][15])+") format('woff')"),b=b.join(", "));var q=new FontFace(a[26],b,c);q.load().then(function(){e?O(e,g,n):
+g()})}});
