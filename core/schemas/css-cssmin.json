@@ -16,8 +16,21 @@
                 },
                 "RemoveComments": {
                     "title": "Remove comments.",
-                    "type": "boolean",
-                    "default": true
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean",
+                            "default": true
+                        },
+                        "whitelist": {
+                            "title": "Regular expression whitelisting any important comments to preserve.",
+                            "type": "string",
+                            "default": "/(^\\/\\*!|@preserve|copyright|license|author|https?:|www\\.)/i",
+                            "size": 80,
+                            "placeholder": "Regular expression whitelisting any important comments to preserve."
+                        }
+                    },
+                    "additionalProperties": false
                 },
                 "RemoveEmptyRulesets": {
                     "title": "Remove any empty rulesets (including @keyframes at-rule block rulesets)",

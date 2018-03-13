@@ -362,13 +362,19 @@ class AdminForm extends Controller implements Controller_Interface
             $option['default_value'] = $option['default_checked'];
  
             // option with sub option
-            if (isset($option['oneOf'])) {
-
-                // verify json schema
-                if (sizeof($option['oneOf']) !== 2) {
-                    throw new Exception('Invalid schema configuration for ' . $schema_path . '.' . $key, 'admin');
+            if ($option['type'] === 'object' && isset($option['properties'])) {
+                $suboption = false;
+                $keys = array_keys($option['properties']);
+                foreach ($keys as $subkey) {
+                    if ($subkey !== 'enabled') {
+                        $suboption = $option['properties'][$subkey];
+                        $suboption['json_key'] = $schema_path . '.' . $key . '.' . $subkey;
+                        break 1;
+                    }
                 }
-                $suboption = (array)$option['oneOf'][1];
+                if (!$suboption) {
+                    throw new Exception('No suboption for advanced option', 'settings');
+                }
 
                 // referenced JSON schema link
                 if (isset($suboption['$ref'])) {
@@ -387,12 +393,12 @@ class AdminForm extends Controller implements Controller_Interface
                 }
 
                 // default value
-                if (isset($suboption['default'])) {
-                    $option['default_value'] = $suboption['default'];
-                }
+                //if (isset($suboption['default'])) {
+                //    $option['default_value'] = $suboption['default'];
+                //}
 
                 // json key
-                $option['json_key'] = $schema_path . '.' . $key;
+                $option['json_key'] = $schema_path . '.' . $key . '.enabled';
 
                 // option value
                 $option_value = $this->get($option['json_key']);
@@ -517,14 +523,18 @@ class AdminForm extends Controller implements Controller_Interface
                                 print '</select>';
                             }
                         } else {
-                            
+                            $value = $this->options->get($option['suboption']['json_key']);
+                            if (is_null($value) || !isset($value)) {
+                                $value = (isset($option['suboption']['default'])) ? $option['suboption']['default'] : '';
+                            }
+
                             // text input
-                            print '<input type="text" data-suboption="' . $option['json_key'] . '" ' .
+                            print '<input type="text" name="o10n['.$option['suboption']['json_key'].']" data-suboption="' . $option['json_key'] . '" ' .
                                 ((isset($option['suboption']['size'])) ? ' size="'.esc_html($option['suboption']['size']).'"' : '') .
                                 ((isset($option['suboption']['minLength'])) ? ' minlength="'.esc_html($option['suboption']['minLength']).'"' : '')  .
                                 ((isset($option['suboption']['maxLength'])) ? ' maxlength="'.esc_html($option['suboption']['maxLength']).'"' : '') .
                                 ((isset($option['suboption']['placeholder'])) ? ' placeholder="'.esc_html($option['suboption']['placeholder']).'"' : '') .
-                                ' value="' . (string)$option['suboption']['value'] . '"' . ' />';
+                                ' value="' . (string)$value . '"' . ' />';
                         }
 
                     break;
@@ -578,6 +588,9 @@ class AdminForm extends Controller implements Controller_Interface
         if (!$this->admin->is_admin() || !check_admin_referer('save_settings') || !$this->user = wp_get_current_user()) {
             throw new Exception('Not authorized.', 'settings');
         }
+
+        // load post data
+        $this->AdminForminput->load_post();
 
         // redirect to form
         $redirect_url = (isset($_POST['_wp_http_referer'])) ? $_POST['_wp_http_referer'] : add_query_arg(array( 'page' => 'o10n-' . $this->AdminView->active() ), admin_url('admin.php'));
