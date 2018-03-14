@@ -203,6 +203,7 @@ class AdminViewFonts extends AdminViewBase
                 $view_key = 'fonts';
             break;
             case "google":
+            case "settings":
             case "intro":
                 $view_key = 'fonts-' . $tab;
             break;
@@ -408,6 +409,50 @@ class AdminViewFonts extends AdminViewBase
                 if ($forminput->get('fonts.critical-css-file') !== '') {
                 }
 
+            break;
+            case "settings":
+
+                // Font profile
+                $fonts = $forminput->get('fonts', 'json-array');
+                if ($fonts) {
+
+                    // @todo improve
+                    $iterator = new \RecursiveIteratorIterator(
+                        new \RecursiveArrayIterator($fonts),
+                        \RecursiveIteratorIterator::SELF_FIRST
+                    );
+                    $path = [];
+                    $flatArray = [];
+
+                    $arrayVal = false;
+                    foreach ($iterator as $key => $value) {
+                        $path[$iterator->getDepth()] = $key;
+
+                        $dotpath = 'fonts.'.implode('.', array_slice($path, 0, $iterator->getDepth() + 1));
+                        if ($arrayVal && strpos($dotpath, $arrayVal) === 0) {
+                            continue 1;
+                        }
+
+                        if (!is_array($value) || empty($value) || array_keys($value)[0] === 0) {
+                            if (is_array($value) && (empty($value) || array_keys($value)[0] === 0)) {
+                                $arrayVal = $dotpath;
+                            } else {
+                                $arrayVal = false;
+                            }
+
+                            $flatArray[$dotpath] = $value;
+                        }
+                    }
+
+                    // delete existing options
+                    $this->options->delete('fonts.*');
+
+                    // replace all options
+                    $this->AdminOptions->save($flatArray);
+                }
+            break;
+            default:
+                throw new Exception('Invalid Web Font admin view ' . esc_html($tab), 'core');
             break;
         }
     }

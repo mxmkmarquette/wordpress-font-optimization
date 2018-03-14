@@ -32,6 +32,9 @@ class AdminFonts extends ModuleAdminController implements Module_Admin_Controlle
             'title' => 'Google Fonts',
             'title_attr' => 'Google Font Downloader',
             'is_tab_of' => ''
+        ),
+        'settings' => array(
+            'title' => 'Settings'
         )
     );
 
