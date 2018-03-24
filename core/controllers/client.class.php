@@ -130,6 +130,10 @@ class Client extends Controller implements Controller_Interface
         $header_priority = apply_filters('o10n_header_priority', $this->first_priority);
         add_action('wp_head', array( $this, 'header' ), $header_priority);
 
+        // include client footer slot in HTML
+        $footer_priority = apply_filters('o10n_footer_priority', PHP_INT_MAX - 1);
+        add_action('wp_footer', array( $this, 'footer' ), $footer_priority);
+
         // add client to HTML
         add_filter('o10n_html', array( $this, 'add_html' ), 10, 1);
 
@@ -159,6 +163,14 @@ class Client extends Controller implements Controller_Interface
     final public function header()
     {
         print '<meta rel="o10n_head" />';
+    }
+
+    /**
+     * Add client meta slot to HTML
+     */
+    final public function footer()
+    {
+        print '<script data-o10n>o10n.f();</script>';
     }
 
     /**
@@ -196,7 +208,6 @@ class Client extends Controller implements Controller_Interface
                 $charset = '';
             }
 
-            
             // escape regex results
             if (strpos($client_html, '$1')) {
                 $client_html = preg_replace('|(\$\d+)|', '\\\\$1', $client_html);

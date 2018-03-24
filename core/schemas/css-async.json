@@ -79,7 +79,7 @@
                             "load_position": {
                                 "title": "Load position of CSS",
                                 "type": "string",
-                                "enum": ["header", "timing"],
+                                "enum": ["header", "footer", "timing"],
                                 "default": "header"
                             },
                             "load_timing": {
@@ -141,7 +141,7 @@
         "load_position": {
             "title": "Load position of CSS",
             "type": "string",
-            "enum": ["header", "timing"],
+            "enum": ["header", "footer", "timing"],
             "default": "header"
         },
         "load_timing": {

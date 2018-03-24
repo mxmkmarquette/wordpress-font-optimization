@@ -155,8 +155,11 @@ class Fonts extends Controller implements Controller_Interface
                 $client_config[$this->client->config_index('fonts', 'config')] = $fontface_config;
             }
 
-            $load_position = $this->options->get('fonts.fontface.load_position');
-            if ($load_position !== 'header') {
+            $load_position = $this->options->get('fonts.fontface.load_position', 'header');
+            if ($load_position === 'footer') {
+                // set load position
+                $client_config[$this->client->config_index('fonts', 'load_position')] = $this->client->config_index('key', 'footer');
+            } elseif ($load_position === 'timed') {
 
                     // add timed exec module
                 $this->client->load_module('timed-exec');
@@ -276,8 +279,11 @@ class Fonts extends Controller implements Controller_Interface
                 $client_config[$this->client->config_index('fonts', 'config')] = $observer_config;
             }
 
-            $load_position = $this->options->get('fonts.fontfaceobserver.load_position');
-            if ($load_position !== 'header') {
+            $load_position = $this->options->get('fonts.fontfaceobserver.load_position', 'header');
+            if ($load_position === 'footer') {
+                // set load position
+                $client_config[$this->client->config_index('fonts', 'load_position')] = $this->client->config_index('key', 'footer');
+            } elseif ($load_position === 'timing') {
 
                     // add timed exec module
                 $this->client->load_module('timed-exec');
@@ -327,7 +333,10 @@ class Fonts extends Controller implements Controller_Interface
         $gfl_config = array();
 
         $load_position = $this->options->get('fonts.googlefontloader.load_position');
-        if ($load_position !== 'header') {
+        if ($load_position === 'footer') {
+            // set load position
+            $gfl_config[$this->client->config_index('fonts', 'load_position')] = $this->client->config_index('key', 'footer');
+        } elseif ($load_position === 'timing') {
 
                 // add timed exec module
             $this->client->load_module('timed-exec');

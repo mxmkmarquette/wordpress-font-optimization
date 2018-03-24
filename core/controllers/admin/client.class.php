@@ -166,12 +166,6 @@ class AdminClient extends Controller implements Controller_Interface
         if (!is_admin() && !is_user_logged_in()) {
             return;
         }
-
-        // store language
-        $lg_index = $this->index('lg');
-        $this->config_data[$lg_index] = $this->lg_data;
-
-        print '<script>O10N['.$this->index('init').']('.json_encode($this->config_data).');</script>';
     }
 
     /**
@@ -189,6 +183,10 @@ class AdminClient extends Controller implements Controller_Interface
             return;
         }
 
+        // add language to client
+        $lg_index = $this->index('lg');
+        $this->config_data[$lg_index] = $this->lg_data;
+
         // set basic init variables
         $this->set_config('core_url', O10N_CORE_URI);
 
@@ -197,6 +195,7 @@ class AdminClient extends Controller implements Controller_Interface
 
         // global admin script
         wp_enqueue_script('o10n_global', O10N_CORE_URI . 'admin/js/global.js', array( 'jquery' ), O10N_CORE_VERSION);
+        wp_add_inline_script('o10n_global', 'O10N['.$this->index('init').']('.json_encode($this->config_data).');');
 
         // admin plugin page?
         if (!isset($_GET['page']) || strpos($_GET['page'], 'o10n') !== 0) {

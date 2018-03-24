@@ -25,5 +25,6 @@
     "REQUESTIDLECALLBACK",
     "INVIEW",
     "TIMING",
-    "MASK"
+    "MASK",
+    "FOOTER"
 ]

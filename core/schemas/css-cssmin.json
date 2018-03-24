@@ -11,8 +11,52 @@
             "properties": {
                 "ImportImports": {
                     "title": "Import external css files defined with the @import at-rule into the minified CSS.",
-                    "type": "boolean",
-                    "default": false
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean",
+                            "default": true
+                        },
+                        "filter": {
+                            "title": "@import Filter",
+                            "type": "object",
+                            "optiontype": "filterlist",
+                            "properties": {
+                                "enabled": {
+                                    "title": "Filter stylesheets to import",
+                                    "type": "boolean",
+                                    "default": false
+                                },
+                                "type": {
+                                    "title": "Filter List Type",
+                                    "type": "string",
+                                    "enum": [
+                                        "include",
+                                        "exclude"
+                                    ],
+                                    "default": "include"
+                                },
+                                "include": {
+                                    "type": "array",
+                                    "items": {
+                                        "title": "Stylesheets to include.",
+                                        "type": "string"
+                                    },
+                                    "uniqueItems": true
+                                },
+                                "exclude": {
+                                    "type": "array",
+                                    "items": {
+                                        "title": "Stylesheets to exclude.",
+                                        "type": "string"
+                                    },
+                                    "uniqueItems": true
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    },
+                    "additionalProperties": false
                 },
                 "RemoveComments": {
                     "title": "Remove comments.",
@@ -27,10 +71,19 @@
                             "type": "string",
                             "default": "/(^\\/\\*!|@preserve|copyright|license|author|https?:|www\\.)/i",
                             "size": 80,
-                            "placeholder": "Regular expression whitelisting any important comments to preserve."
+                            "placeholder": "Leave blank to remove all comments."
                         }
                     },
                     "additionalProperties": false
+                },
+                "RebaseURLs": {
+                    "title": "Convert relative URLs to absolute URLs.",
+                    "github_author": {
+                        "url": "https://github.com/pear/Net_URL2/",
+                        "name": "Net_URL2"
+                    },
+                    "type": "boolean",
+                    "default": true
                 },
                 "RemoveEmptyRulesets": {
                     "title": "Remove any empty rulesets (including @keyframes at-rule block rulesets)",

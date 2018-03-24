@@ -471,15 +471,53 @@ class AdminForm extends Controller implements Controller_Interface
             print '<td class="label">' . (($icons) ? '<div class="icons">'.$icons.'</div>' : '') . '<label for="cb-' . $option['json_key'] . '"><pre>' . $key . '</pre></label></td>';
 
             // print description
-            print '<td class="desc">' . ((isset($option['title'])) ? $option['title'] : '');
+            print '<td class="desc">';
+
+            if (isset($option['github_author'])) {
+                $url = $option['github_author']['url'];
+                $name = (isset($option['github_author']['name'])) ? $option['github_author']['name'] : '';
+                print '<p class="poweredby" rel="' . $option['json_key'] . '"' . ((!$option['checked']) ? ' style="display:none;"' : '') . '>Powered by '.(($name) ? '<a href="'.$url.'" target="_blank">'.$name.'</a>' : '') . '<span class="star">
+                    <a class="github-button" data-manual="1" href="'.$url.'" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a></span>
+                    </p>';
+            }
+
+            if (isset($option['title'])) {
+                print $option['title'];
+            }
 
             if (isset($option['suboption'])) {
 
                 // print option container
                 print '<div class="opt" rel="' . $option['json_key'] . '"' . ((!$option['checked']) ? ' style="display:none;"' : '') . '><div class="opt-inner">';
 
+                $optiontype = (isset($option['suboption']['optiontype'])) ? $option['suboption']['optiontype'] : $option['suboption']['type'];
+
                 // custom configuration
-                switch ($option['suboption']['type']) {
+                switch ($optiontype) {
+
+                    case "filterlist":
+?>
+            <label><input type="checkbox" value="1" name="o10n[<?=$option['suboption']['json_key'];?>.enabled]" data-json-ns="1"<?php $this->checked($option['suboption']['json_key'] . '.enabled'); ?> /> Enable filter</label>
+            <span data-ns="<?=$option['suboption']['json_key'];?>"<?php $this->visible($option['suboption']['json_key']); ?>>
+                <select name="o10n[<?=$option['suboption']['json_key'];?>.type]" data-ns-change="<?=$option['suboption']['json_key'];?>" data-json-default="<?php print esc_attr(json_encode('include')); ?>">
+                    <option value="include"<?php $this->selected($option['suboption']['json_key'] . '.type', 'include'); ?>>Include List</option>
+                    <option value="exclude"<?php $this->selected($option['suboption']['json_key'] . '.type', 'exclude'); ?>>Exclude List</option>
+                </select>
+            </span>
+        
+
+            <div data-ns="<?=$option['suboption']['json_key'];?>"<?php $this->visible($option['suboption']['json_key'], ($this->get($option['suboption']['json_key'] . '.type') === 'include')); ?> data-ns-condition="<?=$option['suboption']['json_key'];?>.type==include">
+                <p class="d">@import Include List</p>
+                <textarea class="json-array-lines" name="o10n[<?=$option['suboption']['json_key'];?>.include]" data-json-type="json-array-lines" placeholder="Exclude stylesheet imports by default. Import stylesheets on this list."><?php $this->line_array($option['suboption']['json_key'] . '.include'); ?></textarea>
+                <p class="description">Enter (parts of) <code>@import</code> URI's to process, e.g. <code>bootstrap.min.css</code>. One match string per line.</p>
+            </div>
+            <div data-ns="<?=$option['suboption']['json_key'];?>"<?php $this->visible($option['suboption']['json_key'], ($this->get($option['suboption']['json_key'] . '.type') === 'exclude')); ?> data-ns-condition="<?=$option['suboption']['json_key'];?>.type==exclude">
+                <p class="d">@import Exclude List</p>
+                <textarea class="json-array-lines" name="o10n[<?=$option['suboption']['json_key'];?>.exclude]" data-json-type="json-array-lines" placeholder="Import stylesheets by default. Exclude stylesheets on this list."><?php $this->line_array($option['suboption']['json_key'] . '.exclude'); ?></textarea>
+                <p class="description">Enter (parts of) <code>@import</code> URI's to exclude from processing, e.g. <code>bootstrap.min.css</code>. One match string per line.</p>
+            </div>
+<?php
+                    break;
 
                     // JSON input
                     case "array":

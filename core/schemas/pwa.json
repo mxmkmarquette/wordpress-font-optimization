@@ -25,6 +25,50 @@
             "type": "boolean",
             "default": false
         },
+        "verify": {
+            "title": "Verify service worker hash to force updates",
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "title": "Enable service worker verification.",
+                    "type": "boolean",
+                    "default": false
+                },
+                "update_interval": {
+                    "title": "Enter a time in seconds to verify the service worker hash.",
+                    "oneOf": [{
+                        "type": "number",
+                        "minimum": 0
+                    }, {
+                        "type": "string",
+                        "enum": [""]
+                    }]
+                }
+            },
+            "additionalProperties": false
+        },
+        "importScripts": {
+            "title": "Import and bundle service worker scripts",
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "title": "Enable importScripts.",
+                    "type": "boolean",
+                    "default": false
+                },
+                "scripts": {
+                    "title": "Scripts to import in service worker.",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uri",
+                        "minLength": 1
+                    },
+                    "uniqueItems": true
+                }
+            },
+            "additionalProperties": false
+        },
         "bypass": {
             "title": "Service worker bypass filter",
             "type": "object",
