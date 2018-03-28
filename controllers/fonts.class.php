@@ -108,8 +108,11 @@ class Fonts extends Controller implements Controller_Interface
      */
     final private function setup_fontface()
     {
+        if (!$this->env->is_optimization()) {
+            return;
+        }
 
-            // requestAnimationFrame timed render
+        // requestAnimationFrame timed render
         $raf_timed_render = false;
         // get config
         $fontface_config = $this->options->get('fonts.fontface.config', array());
@@ -250,6 +253,10 @@ class Fonts extends Controller implements Controller_Interface
      */
     final private function setup_observer()
     {
+        if (!$this->env->is_optimization()) {
+            return;
+        }
+
         // get config
         $observer_config = $this->options->get('fonts.fontfaceobserver.config', array());
         if (!empty($observer_config)) {
@@ -330,6 +337,10 @@ class Fonts extends Controller implements Controller_Interface
      */
     final private function setup_gfl()
     {
+        if (!$this->env->is_optimization()) {
+            return;
+        }
+        
         $gfl_config = array();
 
         $load_position = $this->options->get('fonts.googlefontloader.load_position');
