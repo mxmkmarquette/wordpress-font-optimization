@@ -5,7 +5,7 @@ Tags: font, webfont, font face api, optimization, google font loader, css, page 
 Requires at least: 4.0
 Requires PHP: 5.4
 Tested up to: 4.9.4
-Stable tag: 0.0.37
+Stable tag: 0.0.38
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,7 +52,7 @@ Documentation is available on [Github](https://github.com/o10n-x/wordpress-font-
 
 == Changelog ==
 
-= 0.0.37 =
+= 0.0.38 =
 * Core update (see changelog.txt)
 
 = 0.0.30 =
