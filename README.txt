@@ -5,7 +5,7 @@ Tags: font, webfont, font face api, optimization, google font loader, css, page 
 Requires at least: 4.0
 Requires PHP: 5.4
 Tested up to: 4.9.4
-Stable tag: 0.0.38
+Stable tag: 0.0.39
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,9 @@ Documentation is available on [Github](https://github.com/o10n-x/wordpress-font-
 5. Google Font Theme Installation
 
 == Changelog ==
+
+= 0.0.39 =
+* Added: plugin update protection (plugin index).
 
 = 0.0.38 =
 * Core update (see changelog.txt)
