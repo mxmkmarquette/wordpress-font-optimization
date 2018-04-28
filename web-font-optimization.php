@@ -12,7 +12,7 @@ namespace O10n;
  * @wordpress-plugin
  * Plugin Name:       Web Font Optimization
  * Description:       Advanced Web Font optimization toolkit. Font Face API, Web Font Observer, Google Font Loader, Critical CSS, HTTP/2 Server Push, async and timed font rendering and more.
- * Version:           0.0.40
+ * Version:           0.0.41
  * Author:            Optimization.Team
  * Author URI:        https://optimization.team/
  * GitHub Plugin URI: https://github.com/o10n-x/wordpress-font-optimization
@@ -30,7 +30,7 @@ if (defined('WP_INSTALLING') && WP_INSTALLING) {
 }
 
 // settings
-$module_version = '0.0.40';
+$module_version = '0.0.41';
 $minimum_core_version = '0.0.24';
 $plugin_path = dirname(__FILE__);
 
