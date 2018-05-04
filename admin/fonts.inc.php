@@ -143,7 +143,7 @@ if (is_array($critical_css_files) && isset($critical_css_files['webfonts.css']))
         <td>
         <?php if (!$module_loaded('http2')) {
     ?>
-<p class="description">Install the <a href="<?php print esc_url(add_query_arg(array('s' => 'o10n', 'tab' => 'search', 'type' => 'author'), admin_url('plugin-install.php'))); ?>">HTTP/2 Optimization</a> plugin to use this feature.</p>
+<p class="description">Install the <a href="https://github.com/o10n-x/wordpress-http2-optimization" target="_blank">HTTP/2 Optimization</a> plugin to use this feature.</p>
 <?php
 } else {
         ?>
@@ -254,7 +254,7 @@ if (is_array($critical_css_files) && isset($critical_css_files['webfonts.css']))
             <p class="description" style="margin-bottom:1em;">This option filters out existing WebFontConfig variables and webfont.js scripts from both HTML and javascript.</p>
             <?php if (!$module_loaded('js')) {
     ?>
-<p class="description">Install the <a href="<?php print esc_url(add_query_arg(array('s' => 'o10n', 'tab' => 'search', 'type' => 'author'), admin_url('plugin-install.php'))); ?>">Javascript Optimization</a> plugin to remove the font loader from javascript file sources.</p>
+<p class="description">Install the <a href="https://github.com/o10n-x/wordpress-http2-optimization" target="_blank">Javascript Optimization</a> plugin to remove the font loader from javascript file sources.</p>
 <?php
 } else {
         ?>
@@ -313,7 +313,7 @@ if (is_array($critical_css_files) && isset($critical_css_files['webfonts.css']))
         	<p class="description">Remove font CSS links and <code>@import</code> from HTML and CSS.</p>
 <?php if (!$module_loaded('css')) {
            ?>
-<p class="description">Install the <a href="<?php print esc_url(add_query_arg(array('s' => 'o10n', 'tab' => 'search', 'type' => 'author'), admin_url('plugin-install.php'))); ?>">CSS Optimization</a> plugin to remove <code>@import</code> links from CSS.</p>
+<p class="description">Install the <a href="https://github.com/o10n-x/wordpress-http2-optimization" target="_blank">CSS Optimization</a> plugin to remove <code>@import</code> links from CSS.</p>
 <?php
        }
 ?>
@@ -363,7 +363,7 @@ if (is_array($critical_css_files) && isset($critical_css_files['webfonts.css']))
         <td>
         <?php if (!$module_loaded('css')) {
     ?>
-<p class="description">Install the <a href="<?php print esc_url(add_query_arg(array('s' => 'o10n', 'tab' => 'search', 'type' => 'author'), admin_url('plugin-install.php'))); ?>">CSS Optimization</a> plugin to use this feature.</p>
+<p class="description">Install the <a href="https://github.com/o10n-x/wordpress-http2-optimization" target="_blank">CSS Optimization</a> plugin to use this feature.</p>
 <?php
 } else {
         ?>
