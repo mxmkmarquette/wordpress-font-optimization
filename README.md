@@ -4,6 +4,9 @@
 
 Advanced Web Font optimization toolkit. Font Face API, Web Font Observer, Google Font Loader, Critical CSS, async and timed font rendering and more.
 
+* [Documentation](https://github.com/o10n-x/wordpress-font-optimization/tree/master/docs)
+* [Description](https://github.com/o10n-x/wordpress-font-optimization#description)
+
 **This plugin is removed from WordPress.org. Read the story [here](https://github.com/o10n-x/wordpress-css-optimization/issues/4).**
 
 ## Installation
