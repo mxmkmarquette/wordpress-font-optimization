@@ -6,6 +6,7 @@ Advanced Web Font optimization toolkit. Font Face API, Web Font Observer, Google
 
 * [Documentation](https://github.com/o10n-x/wordpress-font-optimization/tree/master/docs)
 * [Description](https://github.com/o10n-x/wordpress-font-optimization#description)
+* [Version history (Changelog)](https://github.com/o10n-x/wordpress-font-optimization/releases)
 
 **This plugin is removed from WordPress.org. Read the story [here](https://github.com/o10n-x/wordpress-css-optimization/issues/4).**
 
