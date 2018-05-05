@@ -34,7 +34,7 @@ class AdminFonts extends ModuleAdminController implements Module_Admin_Controlle
             'is_tab_of' => ''
         ),
         'settings' => array(
-            'title' => 'Settings'
+            'title' => 'JSON'
         )
     );
 
