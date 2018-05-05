@@ -30,12 +30,15 @@ $profile_json = $dot->toJSON();
 
 <table class="form-table">
     <tr valign="top">
-        <th scope="row">Config Profile</th>
         <td>
-            <p style="font-size:16px;">The configuration of this plugin is based on a JSON schema. The following JSON contains the full configuration of this plugin. You can backup and restore the configuration using the editor.</p>
+            
+            <h3 style="margin-top:0px;margin-bottom:0.5em;">JSON configuration</h3>
+            <p style="font-size:16px;">The following JSON is the full configuration <u><b>of this plugin</b></u>. For the JSON of all optimization plugins, <a href="<?php print add_query_arg(array('page' => 'o10n'), admin_url('admin.php')); ?>">click here</a>. The JSON is verified using JSON schemas (<a href="https://github.com/o10n-x/wordpress-o10n-core/tree/master/schemas" target="_blank">read more</a>).</p>
             <br />
             <div id="fonts"><div class="loading-json-editor"><?php print __('Loading JSON editor...', 'o10n'); ?></div></div>
             <input type="hidden" class="json" name="o10n[fonts]" data-json-type="json" data-json-editor-height="auto" data-json-editor-init="1" value="<?php print esc_attr($profile_json); ?>" />
+            
+            <p class="suboption info_yellow"><strong><span class="dashicons dashicons-lightbulb"></span></strong> For an insight in the available options, you can review the <a href="https://github.com/o10n-x/wordpress-o10n-core/tree/master/schemas" target="_blank">JSON schema source files</a>.</p>
         </td>
     </tr>
 </table>
